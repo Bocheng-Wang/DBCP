@@ -1,0 +1,110 @@
+.masthead h1 {
+    font-size: 100px;
+}
+
+.masthead {
+    padding: 90px 0 110px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.masthead h1 {
+    line-height: 1;
+    letter-spacing: -2px;
+    font-weight: 700;
+}
+
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.btn-lg.btn-shadow {
+    padding: 13px 35px 17px;
+}
+
+.btn-primary.btn-shadow {
+    box-shadow: inset 0 -4px 0 #23527c;
+    border: 0;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+.jumbotron a {
+    color: #fff;
+    color: hsla(0, 0%, 100%, .5);
+    transition: all .2s ease-in-out;
+}
+
+.btn-group-lg > .btn, .btn-lg {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+}
+
+
+.col-md-12 {
+    padding: 0;
+}
+
+.thumbnail {
+    border: none;
+}
+
+.jumbotron:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url(../../../static/Images/bg.svg) repeat 50%;
+    opacity: .1;
+    pointer-events: none;
+}
+
+.thumbnail {
+    -webkit-box-shadow: none;
+}
+
+.jumbotron {
+    z-index: 100;
+    position: relative;
+    padding: 40px 0;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
+    background: #020031;
+    background: linear-gradient(45deg, #98eaa5, #33626d);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#020031", endColorstr="#6d3353", GradientType=1);
+    box-shadow: inset 0 3px 7px rgba(0, 0, 0, .2), inset 0 -3px 7px rgba(0, 0, 0, .2);
+}
+
+

@@ -1,0 +1,223 @@
+{#login/templates/login/index.html#}
+
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Member' %}{% endblock %}
+{% block content %}
+    {#    {% if request.session.is_login %}#}
+    <div class="page-header">
+        <h1>
+            {% translate '项目组成员' %}
+        </h1>
+
+    </div>
+    {#        {% if request.session.user_name == 'Test' %}#}
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                       aria-expanded="true" aria-controls="collapseOne">
+                        项目负责人
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                 aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <div class="col-md-2">
+                        <img style="border-radius:20px;"  width="100%" src="{% static 'Images/wbc.jpg' %}"/>
+                    </div>
+                    <div class="col-md-10">
+                        <h4>
+                            <b>王博丞</b>
+                        </h4>
+                        <p>
+                        <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                            工学博士，2021年毕业于杭州电子科技大学计算机科学与技术专业，现在浙江传媒学院工作。主持浙江省科技厅基础公益研究项目一项，浙江省教育厅技术规划课题一项，作为主要成员参与多个国家级和省部级科研项目，发表SCI/EI论文10余篇。主要研究方向：认知计算与智能影像处理。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        研究人员
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/lmr.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>李美蓉</b>
+                            </h4>
+                            <p>
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                主治医师，浙江大学医学院第一附属医院放射科，硕士毕业于上海交通大学。从事各类疾病影像诊断研究，特别是中枢神经系统疾病MRI诊断，在中枢神经系统肿瘤影像学、影像诊断和鉴别诊断等头颅影像诊断方面具有丰富的临床经验，掌握和熟练应用各种MRI图像后处理技术，熟悉3T
+                                MRI机器用于科学研究的脑功能成像等各种参数的设置，已有数篇论著和摘要被专业领域内国内外会议和杂志接收，多次在中华放射学年会、浙江省放射年会展板交流，于2016年赴奥地利维也纳召开欧洲放射学会上进行会议展板交流。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/cy.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>曹月</b>
+                            </h4>
+                            <p>
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                医学博士，毕业于吉林大学内科学专业，现在吉林大学第一医院放射线科工作，主要从事神经系统、胸部及腹部常见疾病的影像诊断工作。参与研究国家自然科学基金三项，投稿会议摘要多篇，SCI文章累计6篇。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/ndl.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>牛东亮</b>
+                            </h4>
+                            <p>
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                北京邮电大学2020届硕士研究生
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        学生培养
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel"
+                 aria-labelledby="headingThree">
+
+                <div class="panel-body">
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/pjh.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>潘俊含</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2019-09至今，浙江大学，影像医学与核医学，硕士在读</p>
+                                <p>2014-09至2019-06，湖南中医药大学，医学影像学，学士</p>
+                                <h4 style="text-indent:0em;"><b>代表作：</b></h4>
+                                <p>Junhan Pan, Luyou Yan , Hui Gao, Yewen He, Zeya Zhong, Ping Li, Yaxi Zhang , Ying
+                                    Guo, Liangying Liao, Shuwei Zhou, Kun Zhang*. Fast kilovoltage (KV)-switching
+                                    dual-energy computed tomography hydroxyapatite (HAP)-water decomposition technique
+                                    for identifying bone marrow edema in vertebral compression fractures, Quantitative
+                                    Imaging in Medicine and Surgery, doi: 10.21037/qims.2020.02.16.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/ll.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>李蕾</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2018-09至今，浙江传媒学院，本科在读</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/xq.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>谢琪</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2018-09至今，浙江传媒学院，本科在读
+                                <p>大学期间积极学习，会使用C、Python、MySQL等计算机语言。使用Python语言参与过人脸识别系统的开发，对大学生程序设计竞赛、数学建模有所涉猎。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/pl.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>彭龙</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2019-09至今，浙江传媒学院，本科在读
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/jzl.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>江卓霖</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2020-09至今，浙江传媒学院，本科在读</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/dkx.png' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>戴珂萱</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2020-09至今，浙江传媒学院，本科在读</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        {#        </div>#}
+        {##}
+        {#        </div>#}
+        {#        </div>#}
+        {#        </div>#}
+
+        {#        {% endif %}#}
+        {#    {% else %}#}
+        {#        <h1>{% translate 'Please Login in' %}</h1>#}
+        {#    {% endif %}#}
+{% endblock %}

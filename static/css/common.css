@@ -1,0 +1,25 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 90px;
+    font: 18px/0.75em Arial, 'Microsoft YaHei';
+}
+
+footer.bs-docs-footer {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    color: #99979c;
+    background-color: #2d2d2d;
+}
+
+.Header {
+    margin: 0 auto;
+}
+
+
+div {
+    /*text-align: justify;*/
+    text-justify: inter-ideograph;
+}
+
+
+

@@ -1,0 +1,46 @@
+{#login/templates/login/index.html#}
+
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Introduction' %}{% endblock %}
+{% block content %}
+    {#    {% if request.session.is_login %}#}
+
+    <div class="page-header">
+        <h1>
+            {% translate '项目简介' %}
+        </h1>
+
+    </div>
+{#            {% if request.session.user_name == 'Test' %}#}
+    <div class="page-header">
+        <p style="text-indent:2em; font-size: 20px; margin-top: 20px; line-height:2em;">
+            阿尔兹海默症被广泛认为是不可逆转的神经退化性疾病，对于该病的成因尚未取得一致结论。一旦确诊，往往意味着患者的认知功能已经严重退化，无从救治。因此，探索阿尔兹海默症大脑功能性病变机理，实现患病早期阶段的精准预测，对提早预防和干预治疗阿尔兹海默症具有重要意义。本项目融合神经影像科学与人工智能理论，深入挖掘认知功能障碍在动态复杂脑网络中的规律和变异特征，分析脑功能分区之间的连接性和因果性，以<strong
+                style="color:royalblue">“多时空尺度下复杂脑网络构建方法”</strong>为研究基础、以<strong style="color:royalblue">“动态大脑连接性拓扑表征的适用性研究”</strong>为核心研究内容、以实现<strong
+                style="color:royalblue">“基于多模态大脑影像的高水平认知障碍预测技术”</strong>为最终目标展开研究，通过国内外多中心数据采集、细粒度多模态大脑皮层分区、量化评估动态复杂脑网络拓扑表征方法，结合专业医学知识和临床经验指导模型特征选择和训练调优方向，探索建立不同程度认知障碍患者脑区权重分布统一评价体系等。为我国应对人口老龄化、科学防治阿尔兹海默症等工作提供科学、可靠的理论与实验依据。
+        </p>
+        <div style="text-align: right; font-size: 18px;">
+            <p class="mb-0">
+                <i>业精于<b style="color: red;"> 勤 </b>荒于嬉，行成于<b style="color:red;"> 思 </b>毁于随</i>
+            </p>
+            <footer class="blockquote-footer">
+                韩愈 <cite>《进学解》</cite>
+            </footer>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <img width="100%" src="{% static 'Images/F4.1.png' %}" >
+        </div>
+        <div class="col-md-8">
+            <img width="100%" src="{% static 'Images/F4.6.png' %}" >
+        </div>
+    </div>
+
+    {#        {% endif %}#}
+    {#    {% else %}#}
+    {#        <h1>{% translate 'Please Login in' %}</h1>#}
+    {#    {% endif %}#}
+{% endblock %}

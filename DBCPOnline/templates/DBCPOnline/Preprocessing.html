@@ -1,0 +1,368 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Data Preprocessing in DBCP-Online' %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/DBCP.Online/dropzone.css' %}">
+    <link rel="stylesheet" href="{% static 'Bootstrap-table/bootstrap-table.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-switch/css/bootstrap3/bootstrap-switch.css' %}">
+    <link rel="stylesheet" href="{% static 'swiper-6.4.15/swiper-master/package/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/DBCP.Online/Preprocessing.css' %}">
+{% endblock %}
+{% block script %}
+    <script src="{% static 'Bootstrap-table/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'bootstrap-switch/js/bootstrap-switch.js' %}"></script>
+    <script src="{% static 'Bootstrap-table/bootstrap-table-locale-all.min.js' %}"></script>
+    <script src="{% static 'Bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js' %}"></script>
+    <script src="{% static 'swiper-6.4.15/swiper-master/package/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'js/DBCP.Online/Preprocessing.js' %}"></script>
+{% endblock %}
+{% block content %}
+    {% if request.session.is_login %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'Data Preprocessing' %}
+                            <small>{% translate 'Brain Parcellation under HCP MMP v1.0' %}</small>
+
+
+                        </h1>
+                    </div>
+                    <div class="page-header">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">{% translate 'Brain Connectivity' %}<span>   </span><small>{% translate 'Demo shown here. Click the "Download Connectivity"  button below.' %}</small>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-3 text-center">
+                                    <img id="staticConnectivity"
+                                         src="{% static 'DBCPExamples/Connectivity/static.jpg' %}">
+                                    <div class="caption">
+                                        <h3>{% translate 'Static Brain Connectivity' %}</h3>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-9 text-center pull-right">
+                                    <div class="swiper-container ">
+                                        <div class="swiper-wrapper">
+                                            {#                                            {% for index in dynamicWindowNumber %}#}
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/1.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 1</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/5.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 5</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/10.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 10</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/15.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 15</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/20.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 20</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/25.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 25</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/30.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 30</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/35.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 35</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/40.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 40</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/45.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 45</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/50.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 50</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/55.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 55</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/60.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 60</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/65.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 65</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/70.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 70</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/75.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 75</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/80.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 80</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/85.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 85</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/90.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 90</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            <div class="swiper-slide">
+                                                <img id="swiper-slide-image-1"
+                                                     data-src='{% static '/DBCPExamples/Connectivity/95.jpg' %}'
+                                                     class="swiper-lazy">
+                                                <div class="winIndex">Win 95</div>
+                                                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                                            </div>
+                                            {#                                            {% endfor %}#}
+                                        </div>
+                                        <div class="swiper-button-prev"></div>
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-pagination"></div>
+                                    </div>
+
+                                    <div class="caption">
+                                        <h3>{% translate 'Dynamic Brain Connectivity' %}</h3>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div id="myDataRow" class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-info">
+                        <div class="panel-heading text-center">
+
+                            <label class="label label-primary">共计 大脑分区 任务： {{ totalRecords }}</label>
+                            <label class="label label-info">已完成： {{ completeRecords }}</label>
+                            <label class="label label-success">正在运行： {{ runningRecords }}</label>
+                            <label class="label label-warning">等待调度： {{ waitingRecords }}</label>
+                            <label class="label label-danger">失败： {{ FailedRecords }}</label>
+                            |
+                            <label class="label label-primary">运行服务器： {{ runningRecords }}</label>
+                            <label class="label label-success">空闲服务器： {{ idleServer }}</label>
+                            <label class="label label-danger">宕机服务器： {{ deadServer }}</label>
+                        </div>
+
+
+                        <div class="panel-heading text-center">
+
+                            <label class="label label-default">彭龙： {{ Aaron08131 }}</label>
+                            <label class="label label-default">李蕾： {{ LiLei }}</label>
+                            <label class="label label-default">王意培： {{ WangYipei }}</label>
+                            <label class="label label-default">戴珂萱： {{ Daikexuan }}</label>
+                            <label class="label label-default">江卓霖： {{ Jiangzhuolin }}</label>
+                            <label class="label label-default">测试账号（Test）： {{ Test }}</label>
+                        </div>
+                        <div class="panel-body">
+                            {#                            <div class="row">#}
+                            {#                                <div class="col-md-12">#}
+                            {#                                    <input type="text" id="SearchAllInput" onkeyup="myFunction()"#}
+                            {#                                           placeholder={% translate 'Search...' %}>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
+                            <table data-url="/DBCPOnline/Preparation/checkUploadedFiles/ALL"
+                                   data-pagination="true"
+                                   data-locale="zh-CN"
+                                   data-single-select="true"
+                                   data-detail-view="true"
+                                   data-detail-formatter="myUpload_detailFormatter"
+                                    {#                                   data-click-to-select="true"#}
+                                   data-toggle="table"
+                                   data-page-size="1000"
+                                   data-sort-name="uploadedTime"
+                                   data-sort-order="desc"
+                                   data-sortable="true"
+                                    {#                                   data-filter-control="true"#}
+                                    {#                                   data-page-list=[5,10,20,50,All]#}
+                                   data-row-style="dataRowStyle"
+                                   id="PreprocessingTable" class="table-striped  table-sm">
+                                <thead>
+                                <tr>
+
+                                    <th data-field="ModalID"
+                                        data-align="center">
+                                        ModalID
+                                    </th>
+                                    <th data-align="center" data-field="database">
+                                        Source
+                                    </th>
+                                    <th data-align="center" data-sortable="true" data-filter-control="select"
+                                        data-field="subjectID">
+                                        Subject
+                                    </th>
+                                    <th data-align="center" data-visible="false" data-field="group">
+                                        Group
+                                    </th>
+
+                                    <th data-align="center" data-field="visit">
+                                        Visit
+                                    </th>
+                                    <th data-align="center" data-sortable="true" data-filter-control="select"
+                                        data-field="diagnosis">
+                                        Group
+                                    </th>
+                                    <th data-align="center" data-sortable="true" data-filter-control="select"
+                                        data-field="uploader">
+                                        Uploader
+                                    </th>
+
+                                    <th data-field="operate"
+                                        data-align="center"
+                                        data-events=""
+                                        data-width="150"
+                                        data-formatter="progress_StaticFormatter">
+                                        Static
+                                    </th>
+                                    <th data-field="operate"
+                                        data-align="center"
+                                        data-events=""
+                                        data-width="150"
+                                        data-formatter="progress_DynamicFormatter">
+                                        Dynamic
+                                    </th>
+                                    <th data-field="Task_Status"
+                                        data-align="center"
+                                        data-width="150"
+                                        data-events="CheckProcess_operateEvent"
+                                        data-formatter="CheckProcessFormatter">
+                                        Status
+                                    </th>
+                                    <th data-field="resetProcess"
+                                        data-align="center"
+                                        data-width="150"
+                                        data-events="resetProcess_operateEvent"
+                                        data-formatter="resetProcessFormatter">
+                                        IF Failed
+                                    </th>
+                                    <th data-field="viewConnectivity"
+                                        data-align="center"
+                                        data-width="150"
+                                        data-events="viewConnectivity_operateEvent"
+                                        data-formatter="viewConnectivityFormatter">
+                                        Connectivity
+                                    </th>
+                                    <th data-align="center" data-sortable="true"
+                                        data-field="uploadedTime">
+                                        Uploaded
+                                    </th>
+                                    <th data-align="center" data-visible="false" data-sortable="true"
+                                        data-field="dynamic_end_time">
+                                        End Time
+                                    </th>
+                                    <th data-align="center" data-visible="false" data-sortable="true"
+                                        data-formatter="serverFormatter"
+                                        data-field="Server">
+                                        Server
+                                    </th>
+
+                                    <th data-visible="false" data-field="UUID">
+                                        UUID
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <h1>{% translate 'Please Login in' %}</h1>
+    {% endif %}
+
+
+
+    <div id="WaitModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                             aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                            Waiting for process
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

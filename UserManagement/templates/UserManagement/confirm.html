@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate 'Registration confirm' %}{% endblock %}
+{% block content %}
+    <div class="row">
+        <h1 class="text-center">{{ message }}</h1>
+    </div>
+    <script>
+        window.setTimeout("window.location='/UserManagement/login/'", 2000);
+    </script>
+{% endblock %}

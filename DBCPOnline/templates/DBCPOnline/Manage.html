@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Management in DBCP-Online' %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/DBCP.Online/dropzone.css' %}">
+    <link rel="stylesheet" href="{% static 'Bootstrap-table/bootstrap-table.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-switch/css/bootstrap3/bootstrap-switch.css' %}">
+    <link rel="stylesheet" href="{% static 'swiper-6.4.15/swiper-master/package/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/DBCP.Online/Preprocessing.css' %}">
+{% endblock %}
+{% block script %}
+    <script src="{% static 'Bootstrap-table/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'Bootstrap-table/bootstrap-table-locale-all.min.js' %}"></script>
+    <script src="{% static 'bootstrap-switch/js/bootstrap-switch.js' %}"></script>
+    <script src="{% static 'Bootstrap-table/extensions/filter-control/bootstrap-table-filter-control.min.js' %}"></script>
+    <script src="{% static 'swiper-6.4.15/swiper-master/package/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'js/DBCP.Online/Management.js' %}"></script>
+{% endblock %}
+{% block content %}
+    {% if request.session.is_login %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'Parcellation and Correlation' %}
+                            <small>{% translate 'Static and Dynamic connectivity Analysis' %}</small>
+                            <input type="checkbox" id="ParcellationScheduler"
+                                   name="status" {{ parcellation_schedulerStatus }} data-size="small" value='1'>
+                        </h1>
+                    </div>
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'KBCA Analysis' %}
+                            <small>{% translate 'KBCA Analysis' %}</small>
+                            <input type="checkbox" id="CausalityScheduler" name="status" {{ causality_schedulerStatus }}
+                                   data-size="small" value='1'>
+                        </h1>
+                    </div>
+
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'Debug Parcellation Task' %}
+                            <small>{% translate 'Do not delete temporary folders in server' %}</small>
+                            <input type="checkbox" id="ParcellationDebug" name="status" {{ parcellation_debug }}
+                                   data-size="small" value='1'>
+                        </h1>
+                    </div>
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'Debug Causailty Task' %}
+                            <small>{% translate 'Do not delete temporary folders in server' %}</small>
+                            <input type="checkbox" id="CausalityDebug" name="status" {{ causality_debug }}
+                                   data-size="small" value='1'>
+                        </h1>
+                    </div>
+                    <div class="page-header">
+                        <h2>
+                            <label for="basic-url">Delete Modal By ID</label>
+                            <div class="input-group">
+                         <span class="input-group-btn">
+                            <button class="btn btn-danger" id="TodeleteModalBTN" type="button">Delete</button>
+                          </span>
+                                <input type="text" class="form-control" id="modaltoDelete"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="page-header">
+                        <h2>
+                            <label for="basic-url">Reset Parcellation By ID</label>
+                            <div class="input-group">
+                         <span class="input-group-btn">
+                            <button class="btn btn-warning" id="ToResetModalBTN" type="button">Reset</button>
+                          </span>
+                                <input type="text" class="form-control" id="modaltoReset"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                        </h2>
+                    </div>
+
+                      <div class="page-header">
+                        <h2>
+                            <label for="basic-url">Reset Causality By ID</label>
+                            <div class="input-group">
+                         <span class="input-group-btn">
+                            <button class="btn btn-warning" id="ToResetCausalityBTN" type="button">Reset</button>
+                          </span>
+                                <input type="text" class="form-control" id="causalitytoReset"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                        </h2>
+                    </div>
+
+                    <div class="page-header">
+                        <h2>
+                            <label for="basic-url">Parcellation Task Last Run</label>
+                            <Label class="label label-default" id="">{{ parcellationLastRunTime }}</Label>
+                        </h2>
+                    </div>
+                    <div class="page-header">
+                        <h2>
+                            <label for="basic-url">Causality Task Last Run</label>
+                            <Label class="label label-default" id="">{{ causalityLastRunTime }}</Label>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <h1>{% translate 'Please Login in' %}</h1>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{#login/templates/login/index.html#}
+
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate 'Topological Analysis in DBCP-Online' %}{% endblock %}
+{% block content %}
+    {% if request.session.is_login %}
+        <h1>{% translate 'Hi' %} {{ request.session.user_name }} {% translate 'Welcome to the page of Topological Analysis in DBCP-Online' %}</h1>
+    {% else %}
+        <h1>{% translate 'Please login in' %} </h1>
+    {% endif %}
+{% endblock %}

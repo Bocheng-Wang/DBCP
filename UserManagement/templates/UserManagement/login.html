@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Login in Page' %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+{#    <script src="{% static 'UserManagement/js/captcha_ajax.js' %}"></script>#}
+    <div class="container">
+        <div id="loginCtl" class="col-md-4 col-md-offset-1">
+            <form class='form-login' action="/UserManagement/login/" method="post">
+
+                {% csrf_token %}
+                {% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+                <h2 class="text-center">{% translate 'Login' %}</h2>
+                <div class="form-group">
+                    {{ login_form.username.label_tag }}
+                    {{ login_form.username }}
+                </div>
+                <div class="form-group">
+                    {{ login_form.password.label_tag }}
+                    {{ login_form.password }}
+                </div>
+
+{#                <div class="form-group">#}
+{#                    {{ login_form.captcha.errors }}#}
+{#                    {{ login_form.captcha.label_tag }}#}
+{#                    {{ login_form.captcha }}#}
+{#                </div>#}
+                <div class="form-group">
+                    <a href="">{% translate 'Need help?' %}</a>
+                </div>
+                <button type="reset" class="btn btn-default pull-left">{% translate 'Reset' %}</button>
+                <button type="submit" class="btn btn-primary pull-right">{% translate 'Submit' %}</button>
+
+
+            </form>
+        </div>
+        <div class="col-md-4 col-md-offset-1">
+            <img id="loginBgImg" src="{% static 'Images/cuz.jpg' %}">
+        </div>
+    </div> <!-- /container -->
+{% endblock %}
+

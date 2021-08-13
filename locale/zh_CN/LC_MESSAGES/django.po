@@ -1,0 +1,494 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-07 16:13+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\ContentManagement\templates\ContentManagement\ContactUs.html:5
+#: .\templates\base.html:83 .\templates\homepage.html:86
+msgid "Contact Us"
+msgstr "联系我们"
+
+#: .\ContentManagement\templates\ContentManagement\ContactUs.html:8
+#: .\ContentManagement\templates\ContentManagement\ProjectCooperation.html:8
+#: .\ContentManagement\templates\ContentManagement\ProjectDescription.html:8
+#: .\ContentManagement\templates\ContentManagement\ProjectProgress.html:8
+#: .\DBCPOnline\templates\DBCPOnline\DBCPOnline.html:8
+#: .\DBCPOnline\templates\DBCPOnline\DeepLearning.html:8
+#: .\DBCPOnline\templates\DBCPOnline\Hypothesis.html:8
+#: .\DBCPOnline\templates\DBCPOnline\TopologicalAnalysis.html:8
+#: .\UserManagement\templates\UserManagement\userdetail.html:8
+msgid "Hi"
+msgstr "您好 "
+
+#: .\ContentManagement\templates\ContentManagement\ContactUs.html:8
+msgid "Waiting for your contact"
+msgstr "期待联系"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectCooperation.html:5
+msgid "Cooperation"
+msgstr "合作"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectCooperation.html:8
+msgid "Contact us for cooperation"
+msgstr "联系我们"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectCooperation.html:12
+#: .\ContentManagement\templates\ContentManagement\ProjectDescription.html:10
+#: .\ContentManagement\templates\ContentManagement\ProjectProgress.html:10
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:117
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:301
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:295
+#: .\DBCPOnline\templates\DBCPOnline\Visualization.html:17
+msgid "Please Login in"
+msgstr "请先登录"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectDescription.html:5
+#: .\templates\base.html:53 .\templates\homepage.html:55
+msgid "Introduction"
+msgstr "项目简介"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectDescription.html:8
+msgid "Welcome to the Introduction Page"
+msgstr "欢迎，项目简介"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectProgress.html:5
+msgid "Research"
+msgstr "研究"
+
+#: .\ContentManagement\templates\ContentManagement\ProjectProgress.html:8
+msgid "Welcome to the research page"
+msgstr "欢迎来到研究界面"
+
+#: .\DBCPOnline\templates\DBCPOnline\DBCPOnline.html:5
+msgid "Dynamic Brain Connectivity in DBCP-Online"
+msgstr "DBCP-Online中的动态脑连接"
+
+#: .\DBCPOnline\templates\DBCPOnline\DBCPOnline.html:8
+msgid "Welcome to the Analysis of Dynamic Brain Connectivity"
+msgstr "欢迎来到动态脑连接分析界面"
+
+#: .\DBCPOnline\templates\DBCPOnline\DBCPOnline.html:10
+#: .\DBCPOnline\templates\DBCPOnline\DeepLearning.html:10
+#: .\DBCPOnline\templates\DBCPOnline\Hypothesis.html:10
+#: .\DBCPOnline\templates\DBCPOnline\TopologicalAnalysis.html:10
+#: .\UserManagement\templates\UserManagement\userdetail.html:10
+msgid "Please login in"
+msgstr "请先登录"
+
+#: .\DBCPOnline\templates\DBCPOnline\DeepLearning.html:5
+msgid "Deep Learning in DBCP-Online"
+msgstr "DBCP-Online中的深度学习研究"
+
+#: .\DBCPOnline\templates\DBCPOnline\DeepLearning.html:8
+msgid "Welcome to the page of Deep Learning in DBCP-Online"
+msgstr "欢迎来到DBCP-Online深度学习页面"
+
+#: .\DBCPOnline\templates\DBCPOnline\Hypothesis.html:5
+msgid "Hypothesis driven model in DBCP-Online"
+msgstr "DBCP-Online中的动态脑连接拓扑研究"
+
+#: .\DBCPOnline\templates\DBCPOnline\Hypothesis.html:8
+msgid "Welcome to the page of Hypothesis driven model in DBCP-Online"
+msgstr "欢迎来到动态脑连接拓扑研究界面"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:4
+msgid "Data Preparation Page"
+msgstr "数据准备界面"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:27
+msgid "MRI/fMRI Upload"
+msgstr "上传 MRI/fMRI 数据"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:28
+msgid "ADNI data supported"
+msgstr "ADNI协议数据已支持"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:35
+msgid "MPRAGE Structural Data"
+msgstr "结构磁共振数据"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:53
+msgid "Resting State fMRI"
+msgstr "静息态磁共振数据"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:68
+msgid "Field Mapping"
+msgstr "磁场分布"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:97
+msgid "Upload data (DICOM files compressed in *.zip format"
+msgstr "上传数据（DICOM格式的压缩文件，'*.zip'）"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:101
+msgid "Subject confirmation"
+msgstr "信息确认"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:105
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:169
+msgid "Clear"
+msgstr "清除"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:119
+msgid "Upload successed !"
+msgstr "上传成功"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:161
+msgid "Start to Upload"
+msgstr "开始上传"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:165
+msgid "Cancel"
+msgstr "取消"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:179
+msgid "Data Management"
+msgstr "数据管理"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:181
+msgid "Owned Data, Click to view the detail within each visit"
+msgstr "已上传数据，查看受试者详细信息，请点击下方 “+”"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:193
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:212
+msgid "Search..."
+msgstr "搜索..."
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:214
+msgid "ID"
+msgstr ""
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:218
+msgid "Subject ID"
+msgstr "受试者ID"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:221
+msgid "Sex"
+msgstr "性别"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:224
+msgid "Education Years"
+msgstr "教育（年）"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:227
+msgid "Career"
+msgstr "职业"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:232
+msgid "Operation"
+msgstr "操作"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:243
+#: .\templates\base.html:69 .\templates\homepage.html:71
+msgid "Visualization"
+msgstr "数据可视化"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:244
+msgid "Preprocessed by widely accepted precedures such as"
+msgstr "采用专业医学影像数据预处理工具 "
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:250
+msgid "etc."
+msgstr "等"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:259
+msgid ""
+"Demo shown here. Click the corresponding Visit Operation for a detail "
+"visualization"
+msgstr "测试用例。请在相应随访中点击“Visualization”按钮，检查成像质量"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preparation.html:266
+msgid "Hold on for NIfTI file downloading ..."
+msgstr "正在下载 NIfTI 文件..."
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:4
+msgid "Data Preprocessing in DBCP-Online"
+msgstr "DBCP-Online中的数据预处理"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:25
+msgid "Data Preprocessing"
+msgstr "数据预处理"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:26
+msgid "Brain Parcellation under HCP MMP v1.0"
+msgstr "HCP MMP下的脑分区，计算静态和动态脑连接"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:31
+msgid "Brain Connectivity"
+msgstr "大脑连接"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:31
+msgid "Demo shown here. Click the \"Download Connectivity\"  button below."
+msgstr "测试用例。请点击下方 “Download Connectivity” 按钮下载大脑连接数据"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:38
+msgid "Static Brain Connectivity"
+msgstr "静态脑连接"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:194
+msgid "Dynamic Brain Connectivity"
+msgstr "动态脑连接"
+
+#: .\DBCPOnline\templates\DBCPOnline\Preprocessing.html:207
+msgid "Preprocessing Queue"
+msgstr "预处理队列"
+
+#: .\DBCPOnline\templates\DBCPOnline\TopologicalAnalysis.html:5
+msgid "Topological Analysis in DBCP-Online"
+msgstr "动态脑连接拓扑分析"
+
+#: .\DBCPOnline\templates\DBCPOnline\TopologicalAnalysis.html:8
+msgid "Welcome to the page of Topological Analysis in DBCP-Online"
+msgstr "欢迎来到DBCP-Online动态脑连接拓扑分析研究界面"
+
+#: .\DBCPOnline\templates\DBCPOnline\Usage.html:5
+msgid "Documentation for DBCP-Online"
+msgstr "DBCP-Online文档"
+
+#: .\DBCPOnline\templates\DBCPOnline\Visualization.html:9
+msgid "Visualization in DBCP-Online"
+msgstr "DBCP-Online数据可视化"
+
+#: .\UserManagement\Toolbox.py:65
+msgid "Click here to confirm your address"
+msgstr "点击确认邮件地址"
+
+#: .\UserManagement\forms.py:7 .\UserManagement\forms.py:19
+msgid "UserName"
+msgstr "用户名"
+
+#: .\UserManagement\forms.py:9 .\UserManagement\forms.py:21
+msgid "Password"
+msgstr "密码"
+
+#: .\UserManagement\forms.py:11 .\UserManagement\forms.py:31
+msgid "Verification"
+msgstr "验证码"
+
+#: .\UserManagement\forms.py:23
+msgid "Confirm Password"
+msgstr "确认密码"
+
+#: .\UserManagement\forms.py:25
+msgid "Email Address"
+msgstr "邮件地址"
+
+#: .\UserManagement\forms.py:28
+msgid "Usage"
+msgstr "用处"
+
+#: .\UserManagement\forms.py:29
+msgid "Affiliation"
+msgstr "单位"
+
+#: .\UserManagement\templates\UserManagement\confirm.html:3
+msgid "Registration confirm"
+msgstr "注册确认"
+
+#: .\UserManagement\templates\UserManagement\login.html:4
+msgid "Login in Page"
+msgstr "登录界面"
+
+#: .\UserManagement\templates\UserManagement\login.html:19
+msgid "Login"
+msgstr "登录"
+
+#: .\UserManagement\templates\UserManagement\login.html:35
+msgid "Need help?"
+msgstr "忘记密码？"
+
+#: .\UserManagement\templates\UserManagement\login.html:37
+#: .\UserManagement\templates\UserManagement\register.html:45
+msgid "Reset"
+msgstr "重置"
+
+#: .\UserManagement\templates\UserManagement\login.html:38
+#: .\UserManagement\templates\UserManagement\register.html:46
+msgid "Submit"
+msgstr "提交"
+
+#: .\UserManagement\templates\UserManagement\register.html:4
+msgid "Registration Page"
+msgstr "注册界面"
+
+#: .\UserManagement\templates\UserManagement\register.html:14
+#: .\templates\base.html:101 .\templates\homepage.html:104
+msgid "Registration"
+msgstr "开放注册"
+
+#: .\UserManagement\templates\UserManagement\userdetail.html:4
+msgid "User Information Page"
+msgstr "用户信息界面"
+
+#: .\UserManagement\templates\UserManagement\userdetail.html:8
+msgid "Welcome to the user information page"
+msgstr "用户信息界面"
+
+#: .\UserManagement\views.py:47 .\UserManagement\views.py:76
+msgid "Please re-check the contents filled"
+msgstr "请检查填写的内容"
+
+#: .\UserManagement\views.py:54
+msgid "Please wait for the approval of website`s manager"
+msgstr "请等候网站后台审核"
+
+#: .\UserManagement\views.py:62 .\UserManagement\views.py:64
+msgid "Incorrect username or password!"
+msgstr "用户名或密码错误"
+
+#: .\UserManagement\views.py:86
+msgid "Passwords filled not match"
+msgstr "两次填写的密码不一致"
+
+#: .\UserManagement\views.py:92
+msgid "UserName existed !"
+msgstr "用户名已存在"
+
+#: .\UserManagement\views.py:97
+msgid "Email address occupied !"
+msgstr "邮件地址已存在"
+
+#: .\UserManagement\views.py:141
+msgid "Invalid request or the confirm link has been expired !"
+msgstr "无效请求或确认连接已过期"
+
+#: .\UserManagement\views.py:151
+msgid "The link has been expired. Please re-registration"
+msgstr "链接过期，请重新注册"
+
+#: .\UserManagement\views.py:158
+msgid "Succeed! Please wait for the final approval backend"
+msgstr "确认成功，请等待最后审核"
+
+#: .\UserManagement\views.py:170
+msgid "Invalid Request"
+msgstr "无效请求"
+
+#: .\UserManagement\views.py:176
+msgid "The request has been approved"
+msgstr "请求已确认"
+
+#: .\UserManagement\views.py:181
+msgid "The request has been canceled"
+msgstr "请求已取消"
+
+#: .\templates\base.html:46 .\templates\homepage.html:48
+msgid "DBCP Project"
+msgstr "DBCP项目"
+
+#: .\templates\base.html:52 .\templates\homepage.html:54
+msgid "HomePage"
+msgstr "DBCP 项目主页"
+
+#: .\templates\base.html:54 .\templates\homepage.html:56
+msgid "Member"
+msgstr "项目组成员"
+
+#: .\templates\base.html:55 .\templates\homepage.html:57
+msgid "Research & Related Works"
+msgstr "研究现状与成果"
+
+#: .\templates\base.html:64 .\templates\homepage.html:66
+msgid "Documentation"
+msgstr "文档"
+
+#: .\templates\base.html:66 .\templates\homepage.html:68
+msgid "Preparation"
+msgstr "数据准备"
+
+#: .\templates\base.html:67 .\templates\homepage.html:69
+msgid "Preprocessing"
+msgstr "数据预处理"
+
+#: .\templates\base.html:76 .\templates\homepage.html:78
+msgid "TopologicalAnalysis"
+msgstr "动态脑连接拓扑分析"
+
+#: .\templates\base.html:78 .\templates\homepage.html:80
+msgid "DeepLearning"
+msgstr "动态脑连接在深度学习中的研究"
+
+#: .\templates\base.html:96 .\templates\homepage.html:99
+msgid "Current: "
+msgstr "当前："
+
+#: .\templates\base.html:98 .\templates\homepage.html:101
+msgid "Login out"
+msgstr "退出登录"
+
+#: .\templates\base.html:100 .\templates\homepage.html:103
+msgid "Login in"
+msgstr "登录"
+
+#: .\templates\base.html:128 .\templates\homepage.html:146
+msgid "998 Xue Yuan Street, Hangzhou, Zhejiang, PRC"
+msgstr "中国 杭州 学源街998号"
+
+#: .\templates\base.html:129 .\templates\homepage.html:147
+msgid "Communication University of Zhejiang"
+msgstr "浙江传媒学院"
+
+#: .\templates\base.html:129 .\templates\homepage.html:147
+msgid " Post code:310018"
+msgstr "邮政编码：310018"
+
+#: .\templates\homepage.html:11
+msgid "DBCP HomePage"
+msgstr "DBCP 项目主页"
+
+#: .\templates\user_confirm_email_template.html:115
+msgid "Dear"
+msgstr "尊敬的 "
+
+#: .\templates\user_confirm_email_template.html:116
+msgid "Thank you for your focus on DBCP project"
+msgstr "感谢您的关注"
+
+#: .\templates\user_confirm_email_template.html:117
+msgid "Click link below to finish your registration. Hope you enjoy DBCP"
+msgstr "点击下方链接完成确认"
+
+#: .\templates\user_confirm_email_template.html:118
+msgid "The link will be available for 7 days"
+msgstr "链接有效期为7天"
+
+#: .\templates\user_confirm_email_template.html:122
+msgid "Click here to verify your email address"
+msgstr "点击下方确认你的邮件地址"
+
+#: .\templates\user_confirm_email_template.html:131
+msgid "To join"
+msgstr "加入"
+
+#: .\templates\user_confirm_email_template.html:133
+msgid "Hangzhou China"
+msgstr "中国 杭州"
+
+#~ msgid "Welcome to documentation page"
+#~ msgstr "欢迎来到文档界面"
+
+#~ msgid "Cooperations"
+#~ msgstr "合作"
+
+#~ msgid "Welcome !"
+#~ msgstr "欢迎访问 ！"
+
+#~ msgid "Uploaded data under preprocessing"
+#~ msgstr "计算HCPMMP脑分区下的静态和动态大脑连接"
+
+#~ msgid "Welcome to Visualization Page"
+#~ msgstr "数据可视化界面"

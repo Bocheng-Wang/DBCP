@@ -1,0 +1,46 @@
+{#login/templates/login/index.html#}
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Documentation for DBCP-Online' %}{% endblock %}
+{% block content %}
+    {#    {% if request.session.is_login %}#}
+    {#        <h1>{% translate 'Hi' %} {{ request.session.user_name }} {% translate 'Welcome to documentation page' %}</h1>#}
+    {#    {% else %}#}
+    {#        <h1>{% translate 'Please Login in' %}</h1>#}
+    {#    {% endif %}#}
+    <div class="col-lg-12">
+        <dl>
+            <div class="page-header">
+                <h1>
+                    {% translate 'Documentation (To be continued...)' %}
+                    <small>{% translate 'ADNI data supported' %}</small>
+                </h1>
+            </div>
+            <dt>
+                {% translate 'ADNI Data Preparation' %} v.2021.05.07, by BC Wang
+            </dt>
+            <dd>
+                <ul>
+                    <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                        <a href={% static 'Documentation.Public/ADNI_Preparation.pdf' %}>{% translate 'How to prepare data downloaded from ADNI (in Chinese)' %}</a>
+                    </li>
+                </ul>
+            </dd>
+            <dt>
+                {% translate 'DBCP-Online Usage' %} v.2021.05.19, by Lei Li
+            </dt>
+            <dd>
+                <ul>
+                    <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                        <a href={% static 'Documentation.Public/DBCPOnline_CN.pdf' %}>{% translate 'DBCPOnline Documentation (in Chinese)' %}</a>
+                    </li>
+                    <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                        <a href={% static 'Documentation.Public/DBCPOnline_EN.pdf' %}>{% translate 'DBCPOnline Documentation (in English)' %}</a>
+                    </li>
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    {#    <embed src={% static 'Documentation.Public/ADNI_Preparation.pdf' %} width="100%" height="800"></embed>#}
+{% endblock %}

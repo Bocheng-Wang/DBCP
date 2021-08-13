@@ -1,0 +1,74 @@
+#SearchAllInput {
+    background-image: url('/static/Images/searchicon.png'); /* Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 100%; /* Full-width */
+    font-size: 12px; /* Increase font-size */
+    padding: 12px 20px 12px 40px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+}
+
+.progress {
+    margin-bottom: 0;
+}
+
+
+.swiper-container {
+    width: 100%;
+    height: auto;
+    /*padding: 90px 0;*/
+    margin-left: auto;
+    margin-right: auto;
+    --swiper-theme-color: #ff6600; /* ??Swiper?? */
+    --swiper-preloader-color: #00ff33; /* ???????????? */
+
+}
+
+#staticConnectivity {
+    height: 150px;
+    width: 150px;
+}
+
+.swiper-lazy {
+    height: 150px;
+    width: 150px;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    height: 150px;
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    transition-property: all;
+}
+
+#progressEffect {
+    position: absolute;
+    z-index: 10;
+    top: 20px;
+    left: 20px;
+}
+
+.winIndex {
+    position: absolute;
+    left: 35%;
+    top: 46%;
+translateX(- 50 %);
+translateY(- 50 %);
+    color: #193ce8;
+    font-weight: bold;
+}

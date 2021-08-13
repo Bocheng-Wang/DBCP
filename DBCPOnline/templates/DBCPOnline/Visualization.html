@@ -1,0 +1,19 @@
+{#login/templates/login/index.html#}
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'brainbrowser-2.5.5/release/brainbrowser.surface-viewer.min.js' %}"></script>
+    <script src="{% static 'js/DBCP.Online/Visualization.js' %}"></script>
+{% endblock %}
+{% block title %}{% translate 'Visualization in DBCP-Online' %}{% endblock %}
+{% block content %}
+    {% if request.session.is_login %}
+
+            <div id="Brain_3D" style="height:700px" ></div>
+
+
+    {% else %}
+        <h1>{% translate 'Please Login in' %}</h1>
+    {% endif %}
+{% endblock %}

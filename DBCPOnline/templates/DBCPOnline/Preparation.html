@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate 'Data Preparation Page' %}{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/DBCP.Online/dropzone.css' %}">
+    <link rel="stylesheet" href="{% static 'css/DBCP.Online/Preparation.css' %}">
+    <link rel="stylesheet" href="{% static 'Bootstrap-table/bootstrap-table.min.css' %}">
+{% endblock %}
+{% block script %}
+    <script src="{% static 'js/DBCP.Online/dropzone.js' %}"></script>
+    <script src="{% static 'js/DBCP.Online/Preparation.js' %}"></script>
+    <script src="{% static 'js/DBCP.Online/dropzone.init.js' %}"></script>
+    <script src="{% static 'Bootstrap-table/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'Bootstrap-table/bootstrap-table-locale-all.min.js' %}"></script>
+    {#        <script src="{% static 'brainbrowser-2.5.5/release/brainbrowser.surface-viewer.min.js' %}"></script>#}
+    <script src="{% static 'brainbrowser-2.5.5/release/brainbrowser.volume-viewer.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% if request.session.is_login %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'MRI/fMRI Upload' %}
+                            <small>{% translate 'ADNI data supported' %}</small>
+                        </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <dl>
+                                <dt>
+                                    {% translate 'MPRAGE Structural Data' %}
+                                </dt>
+                                <dd>
+                                    <ul>
+                                        <li> Acquisition Plane=SAGITTAL; Acquisition Type=3D; Coil=SENSE-Head-8; Field
+                                            Strength=3.0 tesla;Flip Angle=9.0 degree;
+                                            Manufacturer=Philips Medical Systems; Matrix X=256.0 pixels;Matrix Y=256.0
+                                            pixels; Matrix Z=170.0 ;
+                                            Mfg Model=Intera; Pixel Spacing X=1.0 mm; Pixel Spacing Y=1.0 mm; Pulse
+                                            Sequence=GR; Slice Thickness=1.2 mm; TE=3.2 ms; TI=0.0 ms; TR=6.8 ms;
+                                            Weighting=T1;
+                                        </li>
+                                    </ul>
+
+
+                                </dd>
+
+                                <dt>
+                                    {% translate 'Resting State fMRI' %}
+                                </dt>
+                                <dd>
+                                    <ul>
+                                        <li>
+                                            Field Strength=3.0 tesla; Flip Angle=80.0 degree; Manufacturer=Philips
+                                            Medical Systems;Matrix X=64.0 pixels; Matrix Y=64.0 pixels;
+
+                                            Mfg Model=Intera; Pixel Spacing X=3.3 mm; Pixel Spacing Y=3.3 mm; Pulse
+                                            Sequence=GR; Slices=6720.0 ; Slice Thickness=3.3 mm; TE=30.0 ms; TR=3000.0
+                                            ms;
+                                        </li>
+                                    </ul>
+                                </dd>
+                                <dt>
+                                    {% translate 'Field Mapping' %}
+                                </dt>
+                                <dd>
+                                    <ul>
+                                        <li>
+                                            Acquisition Plane=AXIAL; Acquisition Type=3D; Coil=SENSE-Head-8; Field
+                                            Strength=3.0 tesla; Flip Angle=10.0 degree;
+
+                                            Manufacturer=Philips Medical Systems; Matrix X=256.0 pixels; Matrix Y=256.0
+                                            pixels; Matrix Z=104.0 ; Mfg Model=Intera; Pixel Spacing X=1.0 mm; Pixel
+                                            Spacing Y=1.0 mm;
+
+                                            Pulse Sequence=GR; Slice Thickness=3.0 mm; TE=4.6 ms; TI=0.0 ms; TR=20.0 ms;
+                                            Weighting=T2;
+                                        </li>
+                                    </ul>
+
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <div id="actions" class="row">
+                                    <div>
+                                        <!-- The fileinput-button span is used to style the file input field as button -->
+                                        <span class="btn btn-success fileinput-button dz-clickable">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                            <span>{% translate 'Upload data (DICOM files compressed in *.zip format' %}</span>
+                                        </span>
+                                        <button class="btn btn-primary" disabled>
+                                            <i class="glyphicon glyphicon-upload"></i>
+                                            <span>{% translate 'Subject confirmation' %}</span>
+                                        </button>
+                                        <button type="reset" class="btn btn-warning cancel">
+                                            <i class="glyphicon glyphicon-ban-circle"></i>
+                                            <span>{% translate 'Clear' %}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table table-striped" class="files" id="previews">
+                                    <div id="template" class="file-row">
+                                        <div>
+                                            <span class="preview"><img data-dz-thumbnail/></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p class="name" data-dz-name></p>
+                                            <strong class="uploaderror text-danger" hidden
+                                                    data-dz-errormessage>{% translate 'Please Login in' %}</strong>
+                                            <strong class="uploadStatus text-success" hidden
+                                                    dz-success-mark>{% translate 'Upload successed !' %}</strong>
+                                        </div>
+
+                                        <div style="text-align: center" class="col-md-2">
+                                            <p class="size" data-dz-size></p>
+                                            <div class="progress progress-striped active"
+                                                 role="progressbar"
+                                                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                                <div class="progress-bar progress-bar-success" style="width:0;"
+                                                     data-dz-uploadprogress></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-control GroupSelector">
+                                                <option class="btn-success" value="0.HC" selected>Healthy Control
+                                                </option>
+                                                <option class="btn-info" value="2.EMCI">Early MCI</option>
+                                                <option class="btn-warning" value="4.LMCI">Late MCI</option>
+                                                <option class="btn-danger" value="5.AD">Alzheimer`s Disease</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <select class="form-control VisitSelector">
+                                                <option value="null" disabled selected>Visit</option>
+                                                <option value="SC">SC</option>
+                                                <option value="BL">BL</option>
+                                                <option value="M03">M03</option>
+                                                <option value="M06">M06</option>
+                                                <option value="M12">M12</option>
+                                                <option value="M24">M24</option>
+                                                <option value="M36">M36</option>
+                                                <option value="M48">M48</option>
+                                                <option value="M60">M60</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="number" min="1" max="120" class="form-control AgeInput"
+                                                   placeholder="Age">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary start">
+                                                <i class="glyphicon glyphicon-upload"></i>
+                                                <span>{% translate 'Start to Upload' %}</span>
+                                            </button>
+                                            <button data-dz-remove class="btn btn-warning cancel">
+                                                <i class="glyphicon glyphicon-ban-circle"></i>
+                                                <span>{% translate 'Cancel' %}</span>
+                                            </button>
+                                            <button data-dz-remove class="btn btn-danger delete">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                                <span>{% translate 'Clear' %}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'Data Management' %}
+                            <small>
+                                <strong>{{ request.session.user_name }}</strong> {% translate 'Owned Data, Click to view the detail within each visit' %}
+                            </small>
+                        </h1>
+                    </div>
+                    <div id="myDataRow" class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">Data Store</div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="text" id="SearchMyInput" onkeyup="myFunction()"
+                                                   placeholder={% translate 'Search...' %}>
+                                        </div>
+                                    </div>
+                                    {# https://bootstrap-table.com/#}
+                                    <table data-url="/DBCPOnline/Preparation/checkUploadedSubjects/MY"
+                                           data-pagination="true"
+                                           data-detail-view-by-click="true"
+                                           data-locale="zh-CN"
+                                           data-detail-view="true"
+                                           data-detail-formatter="myUpload_detailFormatter"
+                                           data-toggle="table"
+                                           data-page-size="5"
+                                           data-sortable="true"
+                                           data-page-list=[5,10,20]
+                                           id="myUploadedTable" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th data-field="index"
+                                                data-align="center"
+                                                data-visible="false"
+                                                data-formatter="countIndex">
+                                                {% translate 'ID' %}
+                                            </th>
+
+                                            <th data-align="center" data-field="subjectID">
+                                                {% translate 'Subject ID' %}
+                                            </th>
+                                            <th data-align="center" data-field="sex">
+                                                {% translate 'Sex' %}
+                                            </th>
+                                            <th data-align="center" data-field="education_years">
+                                                {% translate 'Education Years' %}
+                                            </th>
+                                            <th data-align="center" data-field="career">
+                                                {% translate 'Career' %}
+                                            </th>
+                                            <th data-field="operate"
+                                                data-align="center"
+                                                data-events="subject_operateEvent"
+                                                data-formatter="subject_operateFormatter">{% translate 'Operation' %}
+                                            </th>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-header">
+                        <h1>
+                            {% translate 'Visualization' %}
+                            <small>{% translate 'Preprocessed by widely accepted precedures such as' %}
+                                <a href="https://brainbrowser.cbrain.mcgill.ca/">Brainbrowser</a>,
+                                <a href="https://surfer.nmr.mgh.harvard.edu/">FreeSurfer</a>,
+                                <a href="https://fsl.fmrib.ox.ac.uk/fsl/fslwiki">FSL</a>,
+                                <a href="https://fmriprep.org/en/stable/">fMRIPrep</a>,
+                                <a href="https://github.com/edickie/ciftify">CIFTIFY</a>
+                                <i>{% translate 'etc.' %}</i></small>
+                        </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-success">
+                                        <div id="visualizationTitle"
+                                             class="panel-heading">{% translate 'Demo shown here. Click the corresponding Visit Operation for a detail visualization' %}
+                                        </div>
+                                        <div class="panel-body" style="background-color: black">
+                                            <div id="visualizeProgress" class="hidden progress">
+                                                <div class="progress-bar progress-bar-striped active"
+                                                     role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                                                     aria-valuemax="100" style="width: 100%">
+                                                    {% translate 'Hold on for NIfTI file downloading ...' %}
+                                                </div>
+                                            </div>
+                                            {#                                                                                        <div id="Brain_3D" style="width: 300px;height: 300px"></div>#}
+                                            <div id="visualize_for_visit">
+                                                {##}
+                                            </div>
+                                            <script id="volume-ui-template" type="x-volume-ui-template">
+                                                <div class="volume-viewer-display"></div>
+                                                {#                                                <div class="volume-viewer-controls volume-controls">#}
+                                                {#                                                    <div class="coords">#}
+                                                {#                                                        <div class="control-heading" id="voxel-coordinates-heading-">#}
+                                                {#                                                            Voxel Coordinates:#}
+                                                {#                                                        </div>#}
+                                                {#                                                        <div class="voxel-coords" data-volume-id="">#}
+                                                {#                                                            X:<input id="voxel-x-" class="control-inputs">#}
+                                                {#                                                            Y:<input id="voxel-y-" class="control-inputs">#}
+                                                {#                                                            Z:<input id="voxel-z-" class="control-inputs">#}
+                                                {#                                                        </div>#}
+                                                {#                                                    </div>#}
+                                                {#                                                </div>#}
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    {% else %}
+        <h1>{% translate 'Please Login in' %} </h1>
+    {% endif %}
+{% endblock %}

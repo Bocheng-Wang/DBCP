@@ -1,0 +1,22 @@
+[2020-09-29 21:45:52]  unzip complete
+[2020-09-29 21:45:52]  ---------------------------
+[2020-09-29 21:45:52]  start preprocessing and restructure foleders in BIDS name conventions.
+[2020-09-29 21:45:52]  subjectID: ADNI2136S4727
+[2020-09-29 21:45:52]  ---------------------------
+[2020-09-29 21:45:52]  start T1w re-structure
+[2020-09-29 21:45:52]  dcm2niix complete
+[2020-09-29 21:45:52]  end T1w re-structure
+[2020-09-29 21:45:52]  ---------------------------
+[2020-09-29 21:45:52]  start fMRI re-structure
+[2020-09-29 21:45:56]  dcm2niix complete
+[2020-09-29 21:45:56]  end fMRI re-structure
+[2020-09-29 21:45:56]  No fieldmap used for susceptibility correction
+[2020-09-29 21:45:56]  ---------------------------
+[2020-09-29 21:45:56]  start Freesurfer preprocess for T1w reconstruction
+[2020-09-29 21:45:56]  ---------------------------
+[2020-09-29 21:45:56]  start FmriPrep preprocess for fmri & fieldmap correction
+[2020-09-30 04:00:34]  end fmriprep preprocess, total time: 6.243855199747616H
+[2020-09-30 04:00:34]  ---------------------------
+[2020-09-30 04:00:34]  Finished all freesurfer and fmriprep process. Please scp all the output into ciftify engine, to continue following processes
+[2020-09-30 04:00:34]  ---------------------------
+[2020-09-30 05:06:07]  end Freesurfer preprocess, total time: 7.336465466486083H

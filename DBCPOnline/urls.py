@@ -1,0 +1,38 @@
+from django.urls import path, include
+
+from . import views
+
+urlpatterns = [
+    path('Usage', views.Usage, name='Usage'),
+    path('Preparation', views.Preparation, name='Preparation'),
+    path('Preprocessing', views.Preprocessing, name='Preprocessing'),
+    path('Visualization', views.Visualization, name='Visualization'),
+    path('DeepLearning', views.DeepLearning, name='DeepLearning'),
+    path('KBCAAnalysis', views.KBCAAnalysis, name='KBCAAnalysis'),
+    path('TopologicalAnalysis', views.TopologicalAnalysis, name='TopologicalAnalysis'),
+    path('J-HCPMMP', views.JHCPMMP, name='JHCPMMP'),
+    path('progressiveHypothesis', views.Hypothesis, name='Hypothesis'),
+    path('Multi-modal', views.Multimodal, name='Multimodal'),
+    path('DBCP', views.DBCP, name='DBCP'),
+    path('Preparation/FileUpload', views.FileUpload, name='FileUpload'),
+    path('Preparation/checkUploadedFiles/<str:range>', views.checkUploadedFiles, name='checkUploadedFiles'),
+    path('Preparation/checkUploadedSubjects/<str:range>', views.checkUploadedSubjects, name='checkUploadedSubjects'),
+    path('Preparation/DeleteVisit', views.DeleteVisit, name='DeleteVisit'),
+    path('Preparation/Find_Visit_By_SubjectID', views.Find_Visit_By_SubjectID, name='Find_Visit_By_SubjectID'),
+    path('Preparation/getNIIfile/<str:visitID>', views.getNIIfile, name='getNIIfile'),
+    path('Preprocessing/getHeatMap/<str:ModalID>/<str:type>/<str:windowIndex>', views.getHeatMap, name='getHeatMap'),
+    path('Preprocessing/getConnectivityFiles/<str:ModalID>', views.getConnectivityFiles, name='getConnectivityFiles'),
+    path('Preprocessing/ResetPreprocessingTask/<str:ModalID>', views.ResetPreprocessingTask,
+         name='ResetPreprocessingTask'),
+    path('Preprocessing/CheckParcellationPreprocessingTask/<str:ModalID>', views.CheckParcellationPreprocessingTask,
+         name='CheckParcellationPreprocessingTask'),
+    # path('Preprocessing/cancelPreprocess', views.cancelPreprocess, name='cancelPreprocess'),
+    # path('Preparation/DeleteVisitTmp/<str:userID>', views.DeleteVisitTmp, name='DeleteVisitTmp'),
+    path('Preparation/DeleteVisitByModalIDTmp/<str:pwd>/<str:modalID>', views.DeleteVisitByModalIDTmp,
+         name='DeleteVisitByModalIDTmp'),
+    path('Preparation/CleanUPServer', views.CleanUPServer, name='CleanUPServer'),
+    path('Manage', views.Manage, name='Manage'),
+    path('Migration', views.Migration, name='Migration'),
+    path('CheckAvaliabletoMigrate', views.CheckAvaliabletoMigrate, name='Migration'),
+    path('MigrateModal/<str:ModalID>/<str:toServerIP>', views.MigrateModal, name='MigrateModal'),
+]
