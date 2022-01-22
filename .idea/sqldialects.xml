@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/../../../../BaiduNetdiskDownload/btv.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_ContentManagement_userip.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_ContentManagement_visitnumber.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCPOnline_connectivity.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCPOnline_modalinfo.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCPOnline_rarfile.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCPOnline_subject.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCPOnline_visit.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCP_Scheduler_causalityconnectivitytask.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCP_Scheduler_correlationconnectivitytask.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCP_Scheduler_server.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_DBCP_Scheduler_taskqueue.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_UserManagement_confirmstring.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_UserManagement_user.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_auth_group.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_auth_group_permissions.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_auth_permission.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_auth_user.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_auth_user_groups.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_auth_user_user_permissions.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_captcha_captchastore.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_django_admin_log.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_django_apscheduler_djangojob.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_django_apscheduler_djangojobexecution.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_django_content_type.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_django_migrations.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/../Back.2021.08.10/DBCP_django_session.sql" dialect="MySQL" />
+  </component>
+</project>

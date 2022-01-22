@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f1ab80e6-0476-4039-8024-2befc490aa03" name="DBCP.Web" url="http://dbcp.cuz.edu.cn">
+        <fileTransfer rootFolder="/var/www/DBCP.Web" accessType="SFTP" host="10.1.125.7" port="22" sshConfigId="f60643c1-275d-4afd-b952-62501a379b9d" sshConfig="root@10.1.125.7:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
