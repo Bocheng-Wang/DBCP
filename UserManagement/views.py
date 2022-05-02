@@ -124,8 +124,11 @@ def register(request):
                 new_user.save()
 
                 code = Toolbox.Make_ConfirmString(new_user)
-                Toolbox.SendUserConfirmMail(new_user.name, email, code)
-
+                try:
+                    Toolbox.SendUserConfirmMail(new_user.name, email, code)
+                except:
+                    return redirect('/UserManagement/login/',
+                                    {"currentIP": currentIP, 'total_visit': totalVisit})  # 自动跳转到登录页面
                 return redirect('/UserManagement/login/',
                                 {"currentIP": currentIP, 'total_visit': totalVisit})  # 自动跳转到登录页面
         return render(request, 'UserManagement/register.html',

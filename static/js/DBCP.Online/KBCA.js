@@ -309,6 +309,11 @@ function myUpload_detailFormatter(index, row) {
     return html.join('')
 }
 
+function queryParams(params) {
+    params.sortName = 'Task_StartTime';
+    return params;
+}
+
 function CheckProcessFormatter(value, row, index) {
     var formData = [];
     formData.push({
@@ -387,7 +392,10 @@ var resetProcess_operateEvent = {
                 dataType: 'text',
 
                 success: function (result) {
-                    $('#PreprocessingTable').bootstrapTable('refresh');
+                    // $('#PreprocessingTable').bootstrapTable('refresh');
+                    row.task_start = false;
+                    row.task_Finish = false;
+                    $('#PreprocessingTable').bootstrapTable('updateRow', {index: index, row: row, replace: true});
                     $('#WaitModal').modal('hide');
                 }
             });

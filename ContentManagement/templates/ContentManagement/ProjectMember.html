@@ -5,15 +5,15 @@
 {% load static %}
 {% block title %}{% translate 'Member' %}{% endblock %}
 {% block content %}
-    {#    {% if request.session.is_login %}#}
-    <div class="page-header">
-        <h1>
-            {% translate '项目组成员' %}
-        </h1>
+    {% if request.session.is_login %}
+        <div class="page-header">
+            <h1>
+                {% translate '项目组成员' %}
+            </h1>
 
-    </div>
-    {#        {% if request.session.user_name == 'Test' %}#}
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        </div>
+
+{#        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">#}
         <div class="panel panel-primary">
             <div class="panel-heading" role="tab" id="headingOne">
                 <h4 class="panel-title">
@@ -27,7 +27,7 @@
                  aria-labelledby="headingOne">
                 <div class="panel-body">
                     <div class="col-md-2">
-                        <img style="border-radius:20px;"  width="100%" src="{% static 'Images/wbc.jpg' %}"/>
+                        <img style="border-radius:20px;" width="100%" src="{% static 'Images/wbc.jpg' %}"/>
                     </div>
                     <div class="col-md-10">
                         <h4>
@@ -69,7 +69,7 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/cy.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/cy.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -84,7 +84,7 @@
 
                     <div class="col-md-12">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/ndl.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/ndl.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -114,7 +114,7 @@
                 <div class="panel-body">
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/pjh.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/pjh.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -135,7 +135,7 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/ll.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/ll.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/xq.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/xq.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -164,7 +164,7 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/pl.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/pl.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -178,7 +178,21 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/jzl.jpg' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/szr.jpg' %}"/>
+                        </div>
+                        <div class="col-md-10">
+                            <h4>
+                                <b>石芷若</b>
+                            </h4>
+
+                            <div style="text-indent:2em; font-size: 18px; margin-top: 20px; line-height:2em;">
+                                <p>2019-09至今 浙江传媒学院,本科在读
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 10px">
+                        <div class="col-md-2">
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/jzl.jpg' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -192,7 +206,7 @@
                     </div>
                     <div class="col-md-12" style="margin-bottom: 10px">
                         <div class="col-md-2">
-                            <img style="border-radius:20px;"  width="100%" src="{% static 'Images/dkx.png' %}"/>
+                            <img style="border-radius:20px;" width="100%" src="{% static 'Images/dkx.png' %}"/>
                         </div>
                         <div class="col-md-10">
                             <h4>
@@ -210,14 +224,7 @@
             </div>
         </div>
 
-        {#        </div>#}
-        {##}
-        {#        </div>#}
-        {#        </div>#}
-        {#        </div>#}
-
-        {#        {% endif %}#}
-        {#    {% else %}#}
-        {#        <h1>{% translate 'Please Login in' %}</h1>#}
-        {#    {% endif %}#}
+    {% else %}
+        <h1>{% translate 'Please Login in' %}</h1>
+    {% endif %}
 {% endblock %}

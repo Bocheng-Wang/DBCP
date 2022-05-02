@@ -210,6 +210,7 @@
                     <div class="panel panel-info">
                         <div class="panel-heading text-center">
 
+
                             <label class="label label-primary">共计 大脑分区 任务： {{ totalRecords }}</label>
                             <label class="label label-info">已完成： {{ completeRecords }}</label>
                             <label class="label label-success">正在运行： {{ runningRecords }}</label>
@@ -220,7 +221,6 @@
                             <label class="label label-success">空闲服务器： {{ idleServer }}</label>
                             <label class="label label-danger">宕机服务器： {{ deadServer }}</label>
                         </div>
-
 
                         <div class="panel-heading text-center">
 
@@ -239,24 +239,28 @@
                             {#                                </div>#}
                             {#                            </div>#}
                             <table data-url="/DBCPOnline/Preparation/checkUploadedFiles/ALL"
-                                   data-pagination="true"
                                    data-locale="zh-CN"
                                    data-single-select="true"
                                    data-detail-view="true"
                                    data-detail-formatter="myUpload_detailFormatter"
                                     {#                                   data-click-to-select="true"#}
                                    data-toggle="table"
-                                   data-page-size="1000"
+                                   data-page-size="15"
+                                   data-pagination="true"
+                                   data-side-pagination="server"
+                                   data-query-params-type=" "
+                                   data-query-params="queryParams"
                                    data-sort-name="uploadedTime"
                                    data-sort-order="desc"
                                    data-sortable="true"
                                     {#                                   data-filter-control="true"#}
                                     {#                                   data-page-list=[5,10,20,50,All]#}
                                    data-row-style="dataRowStyle"
+
                                    id="PreprocessingTable" class="table-striped  table-sm">
                                 <thead>
                                 <tr>
-
+                                    {#                                    <th data-field="id" data-visible="false" >ID</th>#}
                                     <th data-field="ModalID"
                                         data-align="center">
                                         ModalID
@@ -286,6 +290,7 @@
 
                                     <th data-field="operate"
                                         data-align="center"
+
                                         data-events=""
                                         data-width="150"
                                         data-formatter="progress_StaticFormatter">
@@ -299,6 +304,7 @@
                                         Dynamic
                                     </th>
                                     <th data-field="Task_Status"
+
                                         data-align="center"
                                         data-width="150"
                                         data-events="CheckProcess_operateEvent"
@@ -308,6 +314,7 @@
                                     <th data-field="resetProcess"
                                         data-align="center"
                                         data-width="150"
+
                                         data-events="resetProcess_operateEvent"
                                         data-formatter="resetProcessFormatter">
                                         IF Failed

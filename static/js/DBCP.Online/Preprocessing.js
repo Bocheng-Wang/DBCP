@@ -365,6 +365,7 @@ var viewConnectivity_operateEvent = {
 var resetProcess_operateEvent = {
     'click .ResetProcess': function (e, value, row, index) {
         var ModalID = row.ModalID;
+
         if (confirm('Sure to reset this?') === true) {
             $('#WaitModal').modal({backdrop: 'static'})
             $('#WaitModal').modal('show')
@@ -379,7 +380,12 @@ var resetProcess_operateEvent = {
                 dataType: 'text',
 
                 success: function (result) {
-                    $('#PreprocessingTable').bootstrapTable('refresh');
+                    // $('#PreprocessingTable').bootstrapTable('refresh');
+                    row.static_task_start = false;
+                    row.static_task_Finish = false;
+                    row.dynamic_task_start = false;
+                    row.dynamic_task_Finish = false;
+                    $('#PreprocessingTable').bootstrapTable('updateRow', {index: index, row: row});
                     $('#WaitModal').modal('hide');
                 }
             });
@@ -387,6 +393,11 @@ var resetProcess_operateEvent = {
     }
     ,
 };
+
+function queryParams(params) {
+    params.sortName = 'upload_time';
+    return params;
+}
 
 var CheckProcess_operateEvent = {
     'click .CheckProcess': function (e, value, row, index) {

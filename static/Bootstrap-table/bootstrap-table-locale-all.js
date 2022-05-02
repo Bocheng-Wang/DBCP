@@ -1,10 +1,12 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
 	typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-	(global = global || self, factory(global.jQuery));
-}(this, (function ($) { 'use strict';
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jQuery));
+})(this, (function ($) { 'use strict';
 
-	$ = $ && Object.prototype.hasOwnProperty.call($, 'default') ? $['default'] : $;
+	function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+	var $__default = /*#__PURE__*/_interopDefaultLegacy($);
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -18,13 +20,14 @@
 
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 	var global_1 =
-	  // eslint-disable-next-line no-undef
+	  // eslint-disable-next-line es/no-global-this -- safe
 	  check(typeof globalThis == 'object' && globalThis) ||
 	  check(typeof window == 'object' && window) ||
+	  // eslint-disable-next-line no-restricted-globals -- safe
 	  check(typeof self == 'object' && self) ||
 	  check(typeof commonjsGlobal == 'object' && commonjsGlobal) ||
-	  // eslint-disable-next-line no-new-func
-	  Function('return this')();
+	  // eslint-disable-next-line no-new-func -- fallback
+	  (function () { return this; })() || Function('return this')();
 
 	var fails = function (exec) {
 	  try {
@@ -34,26 +37,40 @@
 	  }
 	};
 
-	// Thank's IE8 for his funny defineProperty
+	// Detect IE8's incomplete defineProperty implementation
 	var descriptors = !fails(function () {
-	  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+	  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+	  return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] != 7;
 	});
 
-	var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
-	var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+	var functionBindNative = !fails(function () {
+	  var test = (function () { /* empty */ }).bind();
+	  // eslint-disable-next-line no-prototype-builtins -- safe
+	  return typeof test != 'function' || test.hasOwnProperty('prototype');
+	});
+
+	var call$1 = Function.prototype.call;
+
+	var functionCall = functionBindNative ? call$1.bind(call$1) : function () {
+	  return call$1.apply(call$1, arguments);
+	};
+
+	var $propertyIsEnumerable = {}.propertyIsEnumerable;
+	// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+	var getOwnPropertyDescriptor$1 = Object.getOwnPropertyDescriptor;
 
 	// Nashorn ~ JDK8 bug
-	var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
+	var NASHORN_BUG = getOwnPropertyDescriptor$1 && !$propertyIsEnumerable.call({ 1: 2 }, 1);
 
 	// `Object.prototype.propertyIsEnumerable` method implementation
-	// https://tc39.github.io/ecma262/#sec-object.prototype.propertyisenumerable
-	var f = NASHORN_BUG ? function propertyIsEnumerable(V) {
-	  var descriptor = getOwnPropertyDescriptor(this, V);
+	// https://tc39.es/ecma262/#sec-object.prototype.propertyisenumerable
+	var f$4 = NASHORN_BUG ? function propertyIsEnumerable(V) {
+	  var descriptor = getOwnPropertyDescriptor$1(this, V);
 	  return !!descriptor && descriptor.enumerable;
-	} : nativePropertyIsEnumerable;
+	} : $propertyIsEnumerable;
 
 	var objectPropertyIsEnumerable = {
-		f: f
+		f: f$4
 	};
 
 	var createPropertyDescriptor = function (bitmap, value) {
@@ -65,27 +82,44 @@
 	  };
 	};
 
-	var toString = {}.toString;
+	var FunctionPrototype$1 = Function.prototype;
+	var bind = FunctionPrototype$1.bind;
+	var call = FunctionPrototype$1.call;
+	var uncurryThis = functionBindNative && bind.bind(call, call);
 
-	var classofRaw = function (it) {
-	  return toString.call(it).slice(8, -1);
+	var functionUncurryThis = functionBindNative ? function (fn) {
+	  return fn && uncurryThis(fn);
+	} : function (fn) {
+	  return fn && function () {
+	    return call.apply(fn, arguments);
+	  };
 	};
 
-	var split = ''.split;
+	var toString$1 = functionUncurryThis({}.toString);
+	var stringSlice = functionUncurryThis(''.slice);
+
+	var classofRaw = function (it) {
+	  return stringSlice(toString$1(it), 8, -1);
+	};
+
+	var Object$4 = global_1.Object;
+	var split = functionUncurryThis(''.split);
 
 	// fallback for non-array-like ES3 and non-enumerable old V8 strings
 	var indexedObject = fails(function () {
 	  // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
-	  // eslint-disable-next-line no-prototype-builtins
-	  return !Object('z').propertyIsEnumerable(0);
+	  // eslint-disable-next-line no-prototype-builtins -- safe
+	  return !Object$4('z').propertyIsEnumerable(0);
 	}) ? function (it) {
-	  return classofRaw(it) == 'String' ? split.call(it, '') : Object(it);
-	} : Object;
+	  return classofRaw(it) == 'String' ? split(it, '') : Object$4(it);
+	} : Object$4;
+
+	var TypeError$7 = global_1.TypeError;
 
 	// `RequireObjectCoercible` abstract operation
-	// https://tc39.github.io/ecma262/#sec-requireobjectcoercible
+	// https://tc39.es/ecma262/#sec-requireobjectcoercible
 	var requireObjectCoercible = function (it) {
-	  if (it == undefined) throw TypeError("Can't call method on " + it);
+	  if (it == undefined) throw TypeError$7("Can't call method on " + it);
 	  return it;
 	};
 
@@ -97,79 +131,303 @@
 	  return indexedObject(requireObjectCoercible(it));
 	};
 
-	var isObject = function (it) {
-	  return typeof it === 'object' ? it !== null : typeof it === 'function';
+	// `IsCallable` abstract operation
+	// https://tc39.es/ecma262/#sec-iscallable
+	var isCallable = function (argument) {
+	  return typeof argument == 'function';
 	};
+
+	var isObject = function (it) {
+	  return typeof it == 'object' ? it !== null : isCallable(it);
+	};
+
+	var aFunction = function (argument) {
+	  return isCallable(argument) ? argument : undefined;
+	};
+
+	var getBuiltIn = function (namespace, method) {
+	  return arguments.length < 2 ? aFunction(global_1[namespace]) : global_1[namespace] && global_1[namespace][method];
+	};
+
+	var objectIsPrototypeOf = functionUncurryThis({}.isPrototypeOf);
+
+	var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
+
+	var process = global_1.process;
+	var Deno = global_1.Deno;
+	var versions = process && process.versions || Deno && Deno.version;
+	var v8 = versions && versions.v8;
+	var match, version;
+
+	if (v8) {
+	  match = v8.split('.');
+	  // in old Chrome, versions of V8 isn't V8 = Chrome / 10
+	  // but their correct versions are not interesting for us
+	  version = match[0] > 0 && match[0] < 4 ? 1 : +(match[0] + match[1]);
+	}
+
+	// BrowserFS NodeJS `process` polyfill incorrectly set `.v8` to `0.0`
+	// so check `userAgent` even if `.v8` exists, but 0
+	if (!version && engineUserAgent) {
+	  match = engineUserAgent.match(/Edge\/(\d+)/);
+	  if (!match || match[1] >= 74) {
+	    match = engineUserAgent.match(/Chrome\/(\d+)/);
+	    if (match) version = +match[1];
+	  }
+	}
+
+	var engineV8Version = version;
+
+	/* eslint-disable es/no-symbol -- required for testing */
+
+
+
+	// eslint-disable-next-line es/no-object-getownpropertysymbols -- required for testing
+	var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
+	  var symbol = Symbol();
+	  // Chrome 38 Symbol has incorrect toString conversion
+	  // `get-own-property-symbols` polyfill symbols converted to object are not Symbol instances
+	  return !String(symbol) || !(Object(symbol) instanceof Symbol) ||
+	    // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
+	    !Symbol.sham && engineV8Version && engineV8Version < 41;
+	});
+
+	/* eslint-disable es/no-symbol -- required for testing */
+
+
+	var useSymbolAsUid = nativeSymbol
+	  && !Symbol.sham
+	  && typeof Symbol.iterator == 'symbol';
+
+	var Object$3 = global_1.Object;
+
+	var isSymbol = useSymbolAsUid ? function (it) {
+	  return typeof it == 'symbol';
+	} : function (it) {
+	  var $Symbol = getBuiltIn('Symbol');
+	  return isCallable($Symbol) && objectIsPrototypeOf($Symbol.prototype, Object$3(it));
+	};
+
+	var String$2 = global_1.String;
+
+	var tryToString = function (argument) {
+	  try {
+	    return String$2(argument);
+	  } catch (error) {
+	    return 'Object';
+	  }
+	};
+
+	var TypeError$6 = global_1.TypeError;
+
+	// `Assert: IsCallable(argument) is true`
+	var aCallable = function (argument) {
+	  if (isCallable(argument)) return argument;
+	  throw TypeError$6(tryToString(argument) + ' is not a function');
+	};
+
+	// `GetMethod` abstract operation
+	// https://tc39.es/ecma262/#sec-getmethod
+	var getMethod = function (V, P) {
+	  var func = V[P];
+	  return func == null ? undefined : aCallable(func);
+	};
+
+	var TypeError$5 = global_1.TypeError;
+
+	// `OrdinaryToPrimitive` abstract operation
+	// https://tc39.es/ecma262/#sec-ordinarytoprimitive
+	var ordinaryToPrimitive = function (input, pref) {
+	  var fn, val;
+	  if (pref === 'string' && isCallable(fn = input.toString) && !isObject(val = functionCall(fn, input))) return val;
+	  if (isCallable(fn = input.valueOf) && !isObject(val = functionCall(fn, input))) return val;
+	  if (pref !== 'string' && isCallable(fn = input.toString) && !isObject(val = functionCall(fn, input))) return val;
+	  throw TypeError$5("Can't convert object to primitive value");
+	};
+
+	// eslint-disable-next-line es/no-object-defineproperty -- safe
+	var defineProperty = Object.defineProperty;
+
+	var setGlobal = function (key, value) {
+	  try {
+	    defineProperty(global_1, key, { value: value, configurable: true, writable: true });
+	  } catch (error) {
+	    global_1[key] = value;
+	  } return value;
+	};
+
+	var SHARED = '__core-js_shared__';
+	var store$1 = global_1[SHARED] || setGlobal(SHARED, {});
+
+	var sharedStore = store$1;
+
+	var shared = createCommonjsModule(function (module) {
+	(module.exports = function (key, value) {
+	  return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
+	})('versions', []).push({
+	  version: '3.21.1',
+	  mode: 'global',
+	  copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
+	  license: 'https://github.com/zloirock/core-js/blob/v3.21.1/LICENSE',
+	  source: 'https://github.com/zloirock/core-js'
+	});
+	});
+
+	var Object$2 = global_1.Object;
+
+	// `ToObject` abstract operation
+	// https://tc39.es/ecma262/#sec-toobject
+	var toObject = function (argument) {
+	  return Object$2(requireObjectCoercible(argument));
+	};
+
+	var hasOwnProperty = functionUncurryThis({}.hasOwnProperty);
+
+	// `HasOwnProperty` abstract operation
+	// https://tc39.es/ecma262/#sec-hasownproperty
+	var hasOwnProperty_1 = Object.hasOwn || function hasOwn(it, key) {
+	  return hasOwnProperty(toObject(it), key);
+	};
+
+	var id = 0;
+	var postfix = Math.random();
+	var toString = functionUncurryThis(1.0.toString);
+
+	var uid = function (key) {
+	  return 'Symbol(' + (key === undefined ? '' : key) + ')_' + toString(++id + postfix, 36);
+	};
+
+	var WellKnownSymbolsStore = shared('wks');
+	var Symbol$1 = global_1.Symbol;
+	var symbolFor = Symbol$1 && Symbol$1['for'];
+	var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
+
+	var wellKnownSymbol = function (name) {
+	  if (!hasOwnProperty_1(WellKnownSymbolsStore, name) || !(nativeSymbol || typeof WellKnownSymbolsStore[name] == 'string')) {
+	    var description = 'Symbol.' + name;
+	    if (nativeSymbol && hasOwnProperty_1(Symbol$1, name)) {
+	      WellKnownSymbolsStore[name] = Symbol$1[name];
+	    } else if (useSymbolAsUid && symbolFor) {
+	      WellKnownSymbolsStore[name] = symbolFor(description);
+	    } else {
+	      WellKnownSymbolsStore[name] = createWellKnownSymbol(description);
+	    }
+	  } return WellKnownSymbolsStore[name];
+	};
+
+	var TypeError$4 = global_1.TypeError;
+	var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
 
 	// `ToPrimitive` abstract operation
-	// https://tc39.github.io/ecma262/#sec-toprimitive
-	// instead of the ES6 spec version, we didn't implement @@toPrimitive case
-	// and the second argument - flag - preferred type is a string
-	var toPrimitive = function (input, PREFERRED_STRING) {
-	  if (!isObject(input)) return input;
-	  var fn, val;
-	  if (PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
-	  if (typeof (fn = input.valueOf) == 'function' && !isObject(val = fn.call(input))) return val;
-	  if (!PREFERRED_STRING && typeof (fn = input.toString) == 'function' && !isObject(val = fn.call(input))) return val;
-	  throw TypeError("Can't convert object to primitive value");
+	// https://tc39.es/ecma262/#sec-toprimitive
+	var toPrimitive = function (input, pref) {
+	  if (!isObject(input) || isSymbol(input)) return input;
+	  var exoticToPrim = getMethod(input, TO_PRIMITIVE);
+	  var result;
+	  if (exoticToPrim) {
+	    if (pref === undefined) pref = 'default';
+	    result = functionCall(exoticToPrim, input, pref);
+	    if (!isObject(result) || isSymbol(result)) return result;
+	    throw TypeError$4("Can't convert object to primitive value");
+	  }
+	  if (pref === undefined) pref = 'number';
+	  return ordinaryToPrimitive(input, pref);
 	};
 
-	var hasOwnProperty = {}.hasOwnProperty;
-
-	var has = function (it, key) {
-	  return hasOwnProperty.call(it, key);
+	// `ToPropertyKey` abstract operation
+	// https://tc39.es/ecma262/#sec-topropertykey
+	var toPropertyKey = function (argument) {
+	  var key = toPrimitive(argument, 'string');
+	  return isSymbol(key) ? key : key + '';
 	};
 
 	var document = global_1.document;
 	// typeof document.createElement is 'object' in old IE
-	var EXISTS = isObject(document) && isObject(document.createElement);
+	var EXISTS$1 = isObject(document) && isObject(document.createElement);
 
 	var documentCreateElement = function (it) {
-	  return EXISTS ? document.createElement(it) : {};
+	  return EXISTS$1 ? document.createElement(it) : {};
 	};
 
-	// Thank's IE8 for his funny defineProperty
+	// Thanks to IE8 for its funny defineProperty
 	var ie8DomDefine = !descriptors && !fails(function () {
+	  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
 	  return Object.defineProperty(documentCreateElement('div'), 'a', {
 	    get: function () { return 7; }
 	  }).a != 7;
 	});
 
-	var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+	// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+	var $getOwnPropertyDescriptor$1 = Object.getOwnPropertyDescriptor;
 
 	// `Object.getOwnPropertyDescriptor` method
-	// https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
-	var f$1 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
+	// https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
+	var f$3 = descriptors ? $getOwnPropertyDescriptor$1 : function getOwnPropertyDescriptor(O, P) {
 	  O = toIndexedObject(O);
-	  P = toPrimitive(P, true);
+	  P = toPropertyKey(P);
 	  if (ie8DomDefine) try {
-	    return nativeGetOwnPropertyDescriptor(O, P);
+	    return $getOwnPropertyDescriptor$1(O, P);
 	  } catch (error) { /* empty */ }
-	  if (has(O, P)) return createPropertyDescriptor(!objectPropertyIsEnumerable.f.call(O, P), O[P]);
+	  if (hasOwnProperty_1(O, P)) return createPropertyDescriptor(!functionCall(objectPropertyIsEnumerable.f, O, P), O[P]);
 	};
 
 	var objectGetOwnPropertyDescriptor = {
-		f: f$1
+		f: f$3
 	};
 
-	var anObject = function (it) {
-	  if (!isObject(it)) {
-	    throw TypeError(String(it) + ' is not an object');
-	  } return it;
+	// V8 ~ Chrome 36-
+	// https://bugs.chromium.org/p/v8/issues/detail?id=3334
+	var v8PrototypeDefineBug = descriptors && fails(function () {
+	  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+	  return Object.defineProperty(function () { /* empty */ }, 'prototype', {
+	    value: 42,
+	    writable: false
+	  }).prototype != 42;
+	});
+
+	var String$1 = global_1.String;
+	var TypeError$3 = global_1.TypeError;
+
+	// `Assert: Type(argument) is Object`
+	var anObject = function (argument) {
+	  if (isObject(argument)) return argument;
+	  throw TypeError$3(String$1(argument) + ' is not an object');
 	};
 
-	var nativeDefineProperty = Object.defineProperty;
+	var TypeError$2 = global_1.TypeError;
+	// eslint-disable-next-line es/no-object-defineproperty -- safe
+	var $defineProperty = Object.defineProperty;
+	// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+	var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+	var ENUMERABLE = 'enumerable';
+	var CONFIGURABLE$1 = 'configurable';
+	var WRITABLE = 'writable';
 
 	// `Object.defineProperty` method
-	// https://tc39.github.io/ecma262/#sec-object.defineproperty
-	var f$2 = descriptors ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
+	// https://tc39.es/ecma262/#sec-object.defineproperty
+	var f$2 = descriptors ? v8PrototypeDefineBug ? function defineProperty(O, P, Attributes) {
 	  anObject(O);
-	  P = toPrimitive(P, true);
+	  P = toPropertyKey(P);
+	  anObject(Attributes);
+	  if (typeof O === 'function' && P === 'prototype' && 'value' in Attributes && WRITABLE in Attributes && !Attributes[WRITABLE]) {
+	    var current = $getOwnPropertyDescriptor(O, P);
+	    if (current && current[WRITABLE]) {
+	      O[P] = Attributes.value;
+	      Attributes = {
+	        configurable: CONFIGURABLE$1 in Attributes ? Attributes[CONFIGURABLE$1] : current[CONFIGURABLE$1],
+	        enumerable: ENUMERABLE in Attributes ? Attributes[ENUMERABLE] : current[ENUMERABLE],
+	        writable: false
+	      };
+	    }
+	  } return $defineProperty(O, P, Attributes);
+	} : $defineProperty : function defineProperty(O, P, Attributes) {
+	  anObject(O);
+	  P = toPropertyKey(P);
 	  anObject(Attributes);
 	  if (ie8DomDefine) try {
-	    return nativeDefineProperty(O, P, Attributes);
+	    return $defineProperty(O, P, Attributes);
 	  } catch (error) { /* empty */ }
-	  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported');
+	  if ('get' in Attributes || 'set' in Attributes) throw TypeError$2('Accessors not supported');
 	  if ('value' in Attributes) O[P] = Attributes.value;
 	  return O;
 	};
@@ -185,50 +443,20 @@
 	  return object;
 	};
 
-	var setGlobal = function (key, value) {
-	  try {
-	    createNonEnumerableProperty(global_1, key, value);
-	  } catch (error) {
-	    global_1[key] = value;
-	  } return value;
-	};
+	var functionToString = functionUncurryThis(Function.toString);
 
-	var SHARED = '__core-js_shared__';
-	var store = global_1[SHARED] || setGlobal(SHARED, {});
-
-	var sharedStore = store;
-
-	var functionToString = Function.toString;
-
-	// this helper broken in `3.4.1-3.4.4`, so we can't use `shared` helper
-	if (typeof sharedStore.inspectSource != 'function') {
+	// this helper broken in `core-js@3.4.1-3.4.4`, so we can't use `shared` helper
+	if (!isCallable(sharedStore.inspectSource)) {
 	  sharedStore.inspectSource = function (it) {
-	    return functionToString.call(it);
+	    return functionToString(it);
 	  };
 	}
 
 	var inspectSource = sharedStore.inspectSource;
 
-	var WeakMap = global_1.WeakMap;
+	var WeakMap$1 = global_1.WeakMap;
 
-	var nativeWeakMap = typeof WeakMap === 'function' && /native code/.test(inspectSource(WeakMap));
-
-	var shared = createCommonjsModule(function (module) {
-	(module.exports = function (key, value) {
-	  return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
-	})('versions', []).push({
-	  version: '3.6.0',
-	  mode:  'global',
-	  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
-	});
-	});
-
-	var id = 0;
-	var postfix = Math.random();
-
-	var uid = function (key) {
-	  return 'Symbol(' + String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
-	};
+	var nativeWeakMap = isCallable(WeakMap$1) && /native code/.test(inspectSource(WeakMap$1));
 
 	var keys = shared('keys');
 
@@ -236,63 +464,86 @@
 	  return keys[key] || (keys[key] = uid(key));
 	};
 
-	var hiddenKeys = {};
+	var hiddenKeys$1 = {};
 
-	var WeakMap$1 = global_1.WeakMap;
-	var set, get, has$1;
+	var OBJECT_ALREADY_INITIALIZED = 'Object already initialized';
+	var TypeError$1 = global_1.TypeError;
+	var WeakMap = global_1.WeakMap;
+	var set, get, has;
 
 	var enforce = function (it) {
-	  return has$1(it) ? get(it) : set(it, {});
+	  return has(it) ? get(it) : set(it, {});
 	};
 
 	var getterFor = function (TYPE) {
 	  return function (it) {
 	    var state;
 	    if (!isObject(it) || (state = get(it)).type !== TYPE) {
-	      throw TypeError('Incompatible receiver, ' + TYPE + ' required');
+	      throw TypeError$1('Incompatible receiver, ' + TYPE + ' required');
 	    } return state;
 	  };
 	};
 
-	if (nativeWeakMap) {
-	  var store$1 = new WeakMap$1();
-	  var wmget = store$1.get;
-	  var wmhas = store$1.has;
-	  var wmset = store$1.set;
+	if (nativeWeakMap || sharedStore.state) {
+	  var store = sharedStore.state || (sharedStore.state = new WeakMap());
+	  var wmget = functionUncurryThis(store.get);
+	  var wmhas = functionUncurryThis(store.has);
+	  var wmset = functionUncurryThis(store.set);
 	  set = function (it, metadata) {
-	    wmset.call(store$1, it, metadata);
+	    if (wmhas(store, it)) throw new TypeError$1(OBJECT_ALREADY_INITIALIZED);
+	    metadata.facade = it;
+	    wmset(store, it, metadata);
 	    return metadata;
 	  };
 	  get = function (it) {
-	    return wmget.call(store$1, it) || {};
+	    return wmget(store, it) || {};
 	  };
-	  has$1 = function (it) {
-	    return wmhas.call(store$1, it);
+	  has = function (it) {
+	    return wmhas(store, it);
 	  };
 	} else {
 	  var STATE = sharedKey('state');
-	  hiddenKeys[STATE] = true;
+	  hiddenKeys$1[STATE] = true;
 	  set = function (it, metadata) {
+	    if (hasOwnProperty_1(it, STATE)) throw new TypeError$1(OBJECT_ALREADY_INITIALIZED);
+	    metadata.facade = it;
 	    createNonEnumerableProperty(it, STATE, metadata);
 	    return metadata;
 	  };
 	  get = function (it) {
-	    return has(it, STATE) ? it[STATE] : {};
+	    return hasOwnProperty_1(it, STATE) ? it[STATE] : {};
 	  };
-	  has$1 = function (it) {
-	    return has(it, STATE);
+	  has = function (it) {
+	    return hasOwnProperty_1(it, STATE);
 	  };
 	}
 
 	var internalState = {
 	  set: set,
 	  get: get,
-	  has: has$1,
+	  has: has,
 	  enforce: enforce,
 	  getterFor: getterFor
 	};
 
+	var FunctionPrototype = Function.prototype;
+	// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+	var getDescriptor = descriptors && Object.getOwnPropertyDescriptor;
+
+	var EXISTS = hasOwnProperty_1(FunctionPrototype, 'name');
+	// additional protection from minified / mangled / dropped function names
+	var PROPER = EXISTS && (function something() { /* empty */ }).name === 'something';
+	var CONFIGURABLE = EXISTS && (!descriptors || (descriptors && getDescriptor(FunctionPrototype, 'name').configurable));
+
+	var functionName = {
+	  EXISTS: EXISTS,
+	  PROPER: PROPER,
+	  CONFIGURABLE: CONFIGURABLE
+	};
+
 	var redefine = createCommonjsModule(function (module) {
+	var CONFIGURABLE_FUNCTION_NAME = functionName.CONFIGURABLE;
+
 	var getInternalState = internalState.get;
 	var enforceInternalState = internalState.enforce;
 	var TEMPLATE = String(String).split('String');
@@ -301,9 +552,19 @@
 	  var unsafe = options ? !!options.unsafe : false;
 	  var simple = options ? !!options.enumerable : false;
 	  var noTargetGet = options ? !!options.noTargetGet : false;
-	  if (typeof value == 'function') {
-	    if (typeof key == 'string' && !has(value, 'name')) createNonEnumerableProperty(value, 'name', key);
-	    enforceInternalState(value).source = TEMPLATE.join(typeof key == 'string' ? key : '');
+	  var name = options && options.name !== undefined ? options.name : key;
+	  var state;
+	  if (isCallable(value)) {
+	    if (String(name).slice(0, 7) === 'Symbol(') {
+	      name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
+	    }
+	    if (!hasOwnProperty_1(value, 'name') || (CONFIGURABLE_FUNCTION_NAME && value.name !== name)) {
+	      createNonEnumerableProperty(value, 'name', name);
+	    }
+	    state = enforceInternalState(value);
+	    if (!state.source) {
+	      state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
+	    }
 	  }
 	  if (O === global_1) {
 	    if (simple) O[key] = value;
@@ -318,36 +579,19 @@
 	  else createNonEnumerableProperty(O, key, value);
 	// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
 	})(Function.prototype, 'toString', function toString() {
-	  return typeof this == 'function' && getInternalState(this).source || inspectSource(this);
+	  return isCallable(this) && getInternalState(this).source || inspectSource(this);
 	});
 	});
-
-	var path = global_1;
-
-	var aFunction = function (variable) {
-	  return typeof variable == 'function' ? variable : undefined;
-	};
-
-	var getBuiltIn = function (namespace, method) {
-	  return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global_1[namespace])
-	    : path[namespace] && path[namespace][method] || global_1[namespace] && global_1[namespace][method];
-	};
 
 	var ceil = Math.ceil;
 	var floor = Math.floor;
 
-	// `ToInteger` abstract operation
-	// https://tc39.github.io/ecma262/#sec-tointeger
-	var toInteger = function (argument) {
-	  return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
-	};
-
-	var min = Math.min;
-
-	// `ToLength` abstract operation
-	// https://tc39.github.io/ecma262/#sec-tolength
-	var toLength = function (argument) {
-	  return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+	// `ToIntegerOrInfinity` abstract operation
+	// https://tc39.es/ecma262/#sec-tointegerorinfinity
+	var toIntegerOrInfinity = function (argument) {
+	  var number = +argument;
+	  // eslint-disable-next-line no-self-compare -- safe
+	  return number !== number || number === 0 ? 0 : (number > 0 ? floor : ceil)(number);
 	};
 
 	var max = Math.max;
@@ -357,22 +601,36 @@
 	// Let integer be ? ToInteger(index).
 	// If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
 	var toAbsoluteIndex = function (index, length) {
-	  var integer = toInteger(index);
+	  var integer = toIntegerOrInfinity(index);
 	  return integer < 0 ? max(integer + length, 0) : min$1(integer, length);
+	};
+
+	var min = Math.min;
+
+	// `ToLength` abstract operation
+	// https://tc39.es/ecma262/#sec-tolength
+	var toLength = function (argument) {
+	  return argument > 0 ? min(toIntegerOrInfinity(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+	};
+
+	// `LengthOfArrayLike` abstract operation
+	// https://tc39.es/ecma262/#sec-lengthofarraylike
+	var lengthOfArrayLike = function (obj) {
+	  return toLength(obj.length);
 	};
 
 	// `Array.prototype.{ indexOf, includes }` methods implementation
 	var createMethod = function (IS_INCLUDES) {
 	  return function ($this, el, fromIndex) {
 	    var O = toIndexedObject($this);
-	    var length = toLength(O.length);
+	    var length = lengthOfArrayLike(O);
 	    var index = toAbsoluteIndex(fromIndex, length);
 	    var value;
 	    // Array#includes uses SameValueZero equality algorithm
-	    // eslint-disable-next-line no-self-compare
+	    // eslint-disable-next-line no-self-compare -- NaN check
 	    if (IS_INCLUDES && el != el) while (length > index) {
 	      value = O[index++];
-	      // eslint-disable-next-line no-self-compare
+	      // eslint-disable-next-line no-self-compare -- NaN check
 	      if (value != value) return true;
 	    // Array#indexOf ignores holes, Array#includes - not
 	    } else for (;length > index; index++) {
@@ -383,25 +641,27 @@
 
 	var arrayIncludes = {
 	  // `Array.prototype.includes` method
-	  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
+	  // https://tc39.es/ecma262/#sec-array.prototype.includes
 	  includes: createMethod(true),
 	  // `Array.prototype.indexOf` method
-	  // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
+	  // https://tc39.es/ecma262/#sec-array.prototype.indexof
 	  indexOf: createMethod(false)
 	};
 
 	var indexOf = arrayIncludes.indexOf;
 
 
+	var push = functionUncurryThis([].push);
+
 	var objectKeysInternal = function (object, names) {
 	  var O = toIndexedObject(object);
 	  var i = 0;
 	  var result = [];
 	  var key;
-	  for (key in O) !has(hiddenKeys, key) && has(O, key) && result.push(key);
+	  for (key in O) !hasOwnProperty_1(hiddenKeys$1, key) && hasOwnProperty_1(O, key) && push(result, key);
 	  // Don't enum bug & hidden keys
-	  while (names.length > i) if (has(O, key = names[i++])) {
-	    ~indexOf(result, key) || result.push(key);
+	  while (names.length > i) if (hasOwnProperty_1(O, key = names[i++])) {
+	    ~indexOf(result, key) || push(result, key);
 	  }
 	  return result;
 	};
@@ -417,38 +677,44 @@
 	  'valueOf'
 	];
 
-	var hiddenKeys$1 = enumBugKeys.concat('length', 'prototype');
+	var hiddenKeys = enumBugKeys.concat('length', 'prototype');
 
 	// `Object.getOwnPropertyNames` method
-	// https://tc39.github.io/ecma262/#sec-object.getownpropertynames
-	var f$3 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-	  return objectKeysInternal(O, hiddenKeys$1);
+	// https://tc39.es/ecma262/#sec-object.getownpropertynames
+	// eslint-disable-next-line es/no-object-getownpropertynames -- safe
+	var f$1 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+	  return objectKeysInternal(O, hiddenKeys);
 	};
 
 	var objectGetOwnPropertyNames = {
-		f: f$3
+		f: f$1
 	};
 
-	var f$4 = Object.getOwnPropertySymbols;
+	// eslint-disable-next-line es/no-object-getownpropertysymbols -- safe
+	var f = Object.getOwnPropertySymbols;
 
 	var objectGetOwnPropertySymbols = {
-		f: f$4
+		f: f
 	};
+
+	var concat = functionUncurryThis([].concat);
 
 	// all object keys, includes non-enumerable and symbols
 	var ownKeys = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
 	  var keys = objectGetOwnPropertyNames.f(anObject(it));
 	  var getOwnPropertySymbols = objectGetOwnPropertySymbols.f;
-	  return getOwnPropertySymbols ? keys.concat(getOwnPropertySymbols(it)) : keys;
+	  return getOwnPropertySymbols ? concat(keys, getOwnPropertySymbols(it)) : keys;
 	};
 
-	var copyConstructorProperties = function (target, source) {
+	var copyConstructorProperties = function (target, source, exceptions) {
 	  var keys = ownKeys(source);
 	  var defineProperty = objectDefineProperty.f;
 	  var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
 	  for (var i = 0; i < keys.length; i++) {
 	    var key = keys[i];
-	    if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
+	    if (!hasOwnProperty_1(target, key) && !(exceptions && hasOwnProperty_1(exceptions, key))) {
+	      defineProperty(target, key, getOwnPropertyDescriptor(source, key));
+	    }
 	  }
 	};
 
@@ -458,7 +724,7 @@
 	  var value = data[normalize(feature)];
 	  return value == POLYFILL ? true
 	    : value == NATIVE ? false
-	    : typeof detection == 'function' ? fails(detection)
+	    : isCallable(detection) ? fails(detection)
 	    : !!detection;
 	};
 
@@ -472,7 +738,7 @@
 
 	var isForced_1 = isForced;
 
-	var getOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
+	var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
 
 
 
@@ -492,6 +758,7 @@
 	  options.sham        - add a flag to not completely full polyfills
 	  options.enumerable  - export as enumerable property
 	  options.noTargetGet - prevent calling a getter on target
+	  options.name        - the .name of the function if it does not match the key
 	*/
 	var _export = function (options, source) {
 	  var TARGET = options.target;
@@ -508,13 +775,13 @@
 	  if (target) for (key in source) {
 	    sourceProperty = source[key];
 	    if (options.noTargetGet) {
-	      descriptor = getOwnPropertyDescriptor$1(target, key);
+	      descriptor = getOwnPropertyDescriptor(target, key);
 	      targetProperty = descriptor && descriptor.value;
 	    } else targetProperty = target[key];
 	    FORCED = isForced_1(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced);
 	    // contained in target
 	    if (!FORCED && targetProperty !== undefined) {
-	      if (typeof sourceProperty === typeof targetProperty) continue;
+	      if (typeof sourceProperty == typeof targetProperty) continue;
 	      copyConstructorProperties(sourceProperty, targetProperty);
 	    }
 	    // add a flag to not completely full polyfills
@@ -527,93 +794,130 @@
 	};
 
 	// `IsArray` abstract operation
-	// https://tc39.github.io/ecma262/#sec-isarray
-	var isArray = Array.isArray || function isArray(arg) {
-	  return classofRaw(arg) == 'Array';
-	};
-
-	// `ToObject` abstract operation
-	// https://tc39.github.io/ecma262/#sec-toobject
-	var toObject = function (argument) {
-	  return Object(requireObjectCoercible(argument));
+	// https://tc39.es/ecma262/#sec-isarray
+	// eslint-disable-next-line es/no-array-isarray -- safe
+	var isArray = Array.isArray || function isArray(argument) {
+	  return classofRaw(argument) == 'Array';
 	};
 
 	var createProperty = function (object, key, value) {
-	  var propertyKey = toPrimitive(key);
+	  var propertyKey = toPropertyKey(key);
 	  if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
 	  else object[propertyKey] = value;
 	};
 
-	var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
-	  // Chrome 38 Symbol has incorrect toString conversion
-	  // eslint-disable-next-line no-undef
-	  return !String(Symbol());
-	});
+	var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
+	var test = {};
 
-	var useSymbolAsUid = nativeSymbol
-	  // eslint-disable-next-line no-undef
-	  && !Symbol.sham
-	  // eslint-disable-next-line no-undef
-	  && typeof Symbol() == 'symbol';
+	test[TO_STRING_TAG$1] = 'z';
 
-	var WellKnownSymbolsStore = shared('wks');
-	var Symbol$1 = global_1.Symbol;
-	var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : uid;
+	var toStringTagSupport = String(test) === '[object z]';
 
-	var wellKnownSymbol = function (name) {
-	  if (!has(WellKnownSymbolsStore, name)) {
-	    if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
-	    else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
-	  } return WellKnownSymbolsStore[name];
+	var TO_STRING_TAG = wellKnownSymbol('toStringTag');
+	var Object$1 = global_1.Object;
+
+	// ES3 wrong here
+	var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
+
+	// fallback for IE11 Script Access Denied error
+	var tryGet = function (it, key) {
+	  try {
+	    return it[key];
+	  } catch (error) { /* empty */ }
 	};
 
-	var SPECIES = wellKnownSymbol('species');
+	// getting tag from ES6+ `Object.prototype.toString`
+	var classof = toStringTagSupport ? classofRaw : function (it) {
+	  var O, tag, result;
+	  return it === undefined ? 'Undefined' : it === null ? 'Null'
+	    // @@toStringTag case
+	    : typeof (tag = tryGet(O = Object$1(it), TO_STRING_TAG)) == 'string' ? tag
+	    // builtinTag case
+	    : CORRECT_ARGUMENTS ? classofRaw(O)
+	    // ES3 arguments fallback
+	    : (result = classofRaw(O)) == 'Object' && isCallable(O.callee) ? 'Arguments' : result;
+	};
 
-	// `ArraySpeciesCreate` abstract operation
-	// https://tc39.github.io/ecma262/#sec-arrayspeciescreate
-	var arraySpeciesCreate = function (originalArray, length) {
+	var noop = function () { /* empty */ };
+	var empty = [];
+	var construct = getBuiltIn('Reflect', 'construct');
+	var constructorRegExp = /^\s*(?:class|function)\b/;
+	var exec = functionUncurryThis(constructorRegExp.exec);
+	var INCORRECT_TO_STRING = !constructorRegExp.exec(noop);
+
+	var isConstructorModern = function isConstructor(argument) {
+	  if (!isCallable(argument)) return false;
+	  try {
+	    construct(noop, empty, argument);
+	    return true;
+	  } catch (error) {
+	    return false;
+	  }
+	};
+
+	var isConstructorLegacy = function isConstructor(argument) {
+	  if (!isCallable(argument)) return false;
+	  switch (classof(argument)) {
+	    case 'AsyncFunction':
+	    case 'GeneratorFunction':
+	    case 'AsyncGeneratorFunction': return false;
+	  }
+	  try {
+	    // we can't check .prototype since constructors produced by .bind haven't it
+	    // `Function#toString` throws on some built-it function in some legacy engines
+	    // (for example, `DOMQuad` and similar in FF41-)
+	    return INCORRECT_TO_STRING || !!exec(constructorRegExp, inspectSource(argument));
+	  } catch (error) {
+	    return true;
+	  }
+	};
+
+	isConstructorLegacy.sham = true;
+
+	// `IsConstructor` abstract operation
+	// https://tc39.es/ecma262/#sec-isconstructor
+	var isConstructor = !construct || fails(function () {
+	  var called;
+	  return isConstructorModern(isConstructorModern.call)
+	    || !isConstructorModern(Object)
+	    || !isConstructorModern(function () { called = true; })
+	    || called;
+	}) ? isConstructorLegacy : isConstructorModern;
+
+	var SPECIES$1 = wellKnownSymbol('species');
+	var Array$1 = global_1.Array;
+
+	// a part of `ArraySpeciesCreate` abstract operation
+	// https://tc39.es/ecma262/#sec-arrayspeciescreate
+	var arraySpeciesConstructor = function (originalArray) {
 	  var C;
 	  if (isArray(originalArray)) {
 	    C = originalArray.constructor;
 	    // cross-realm fallback
-	    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
+	    if (isConstructor(C) && (C === Array$1 || isArray(C.prototype))) C = undefined;
 	    else if (isObject(C)) {
-	      C = C[SPECIES];
+	      C = C[SPECIES$1];
 	      if (C === null) C = undefined;
 	    }
-	  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
+	  } return C === undefined ? Array$1 : C;
 	};
 
-	var userAgent = getBuiltIn('navigator', 'userAgent') || '';
+	// `ArraySpeciesCreate` abstract operation
+	// https://tc39.es/ecma262/#sec-arrayspeciescreate
+	var arraySpeciesCreate = function (originalArray, length) {
+	  return new (arraySpeciesConstructor(originalArray))(length === 0 ? 0 : length);
+	};
 
-	var process = global_1.process;
-	var versions = process && process.versions;
-	var v8 = versions && versions.v8;
-	var match, version;
-
-	if (v8) {
-	  match = v8.split('.');
-	  version = match[0] + match[1];
-	} else if (userAgent) {
-	  match = userAgent.match(/Edge\/(\d+)/);
-	  if (!match || match[1] >= 74) {
-	    match = userAgent.match(/Chrome\/(\d+)/);
-	    if (match) version = match[1];
-	  }
-	}
-
-	var v8Version = version && +version;
-
-	var SPECIES$1 = wellKnownSymbol('species');
+	var SPECIES = wellKnownSymbol('species');
 
 	var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
 	  // We can't use this feature detection in V8 since it causes
 	  // deoptimization and serious performance degradation
 	  // https://github.com/zloirock/core-js/issues/677
-	  return v8Version >= 51 || !fails(function () {
+	  return engineV8Version >= 51 || !fails(function () {
 	    var array = [];
 	    var constructor = array.constructor = {};
-	    constructor[SPECIES$1] = function () {
+	    constructor[SPECIES] = function () {
 	      return { foo: 1 };
 	    };
 	    return array[METHOD_NAME](Boolean).foo !== 1;
@@ -623,11 +927,12 @@
 	var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
 	var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
 	var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
+	var TypeError = global_1.TypeError;
 
 	// We can't use this feature detection in V8 since it causes
 	// deoptimization and serious performance degradation
 	// https://github.com/zloirock/core-js/issues/679
-	var IS_CONCAT_SPREADABLE_SUPPORT = v8Version >= 51 || !fails(function () {
+	var IS_CONCAT_SPREADABLE_SUPPORT = engineV8Version >= 51 || !fails(function () {
 	  var array = [];
 	  array[IS_CONCAT_SPREADABLE] = false;
 	  return array.concat()[0] !== array;
@@ -644,10 +949,11 @@
 	var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
 
 	// `Array.prototype.concat` method
-	// https://tc39.github.io/ecma262/#sec-array.prototype.concat
+	// https://tc39.es/ecma262/#sec-array.prototype.concat
 	// with adding support of @@isConcatSpreadable and @@species
 	_export({ target: 'Array', proto: true, forced: FORCED }, {
-	  concat: function concat(arg) { // eslint-disable-line no-unused-vars
+	  // eslint-disable-next-line no-unused-vars -- required for `.length`
+	  concat: function concat(arg) {
 	    var O = toObject(this);
 	    var A = arraySpeciesCreate(O, 0);
 	    var n = 0;
@@ -655,7 +961,7 @@
 	    for (i = -1, length = arguments.length; i < length; i++) {
 	      E = i === -1 ? O : arguments[i];
 	      if (isConcatSpreadable(E)) {
-	        len = toLength(E.length);
+	        len = lengthOfArrayLike(E);
 	        if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
 	        for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
 	      } else {
@@ -673,7 +979,7 @@
 	 * Author: Phillip Kruger <phillip.kruger@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['af-ZA'] = {
+	$__default["default"].fn.bootstrapTable.locales['af-ZA'] = $__default["default"].fn.bootstrapTable.locales['af'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -772,14 +1078,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['af-ZA']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['af-ZA']);
 
 	/**
 	 * Bootstrap Table English translation
 	 * Author: Zhixin Wen<wenzhixin2010@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ar-SA'] = {
+	$__default["default"].fn.bootstrapTable.locales['ar-SA'] = $__default["default"].fn.bootstrapTable.locales['ar'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -879,19 +1185,19 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ar-SA']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ar-SA']);
 
 	/**
-	 * Bootstrap Table English translation
+	 * Bootstrap Table Bulgarian translation
 	 * Author: Mikhail Kalatchev <kalatchev[at]gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['bg-BG'] = {
+	$__default["default"].fn.bootstrapTable.locales['bg-BG'] = $__default["default"].fn.bootstrapTable.locales['bg'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Копиране на редове';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Печат';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Зареждане, моля изчакайте';
@@ -901,10 +1207,10 @@
 	  },
 	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
 	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "\u041F\u043E\u043A\u0430\u0437\u0430\u043D\u0438 \u0440\u0435\u0434\u043E\u0432\u0435 \u043E\u0442 ".concat(pageFrom, " \u0434\u043E ").concat(pageTo, " \u043E\u0442 ").concat(totalRows, " \u0440\u0435\u0434\u0430 (\u0444\u0438\u043B\u0442\u0440\u0438\u0440\u0430\u043D\u0438 \u043E\u0442 \u043E\u0431\u0449\u043E ").concat(totalNotFiltered, " \u0440\u0435\u0434\u0430)");
+	      return "\u041F\u043E\u043A\u0430\u0437\u0430\u043D\u0438 \u0440\u0435\u0434\u043E\u0432\u0435 \u043E\u0442 ".concat(pageFrom, " \u0434\u043E ").concat(pageTo, " \u043E\u0442 ").concat(totalRows, " (\u0444\u0438\u043B\u0442\u0440\u0438\u0440\u0430\u043D\u0438 \u043E\u0442 \u043E\u0431\u0449\u043E ").concat(totalNotFiltered, ")");
 	    }
 
-	    return "\u041F\u043E\u043A\u0430\u0437\u0430\u043D\u0438 \u0440\u0435\u0434\u043E\u0432\u0435 \u043E\u0442 ".concat(pageFrom, " \u0434\u043E ").concat(pageTo, " \u043E\u0442 \u043E\u0431\u0449\u043E ").concat(totalRows, " \u0440\u0435\u0434\u0430");
+	    return "\u041F\u043E\u043A\u0430\u0437\u0430\u043D\u0438 \u0440\u0435\u0434\u043E\u0432\u0435 \u043E\u0442 ".concat(pageFrom, " \u0434\u043E ").concat(pageTo, " \u043E\u0442 \u043E\u0431\u0449\u043E ").concat(totalRows);
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
 	    return 'предишна страница';
@@ -976,16 +1282,16 @@
 	    return 'Затваряне';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Скрива/показва контроли';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Скрива контроли';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Показва контроли';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['bg-BG']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['bg-BG']);
 
 	/**
 	 * Bootstrap Table Catalan translation
@@ -993,7 +1299,7 @@
 	 *          Claudi Martinez<claudix.kernel@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ca-ES'] = {
+	$__default["default"].fn.bootstrapTable.locales['ca-ES'] = $__default["default"].fn.bootstrapTable.locales['ca'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -1092,7 +1398,7 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ca-ES']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ca-ES']);
 
 	/**
 	 * Bootstrap Table Czech translation
@@ -1100,12 +1406,12 @@
 	 * Author: Jakub Svestka <svestka1999@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['cs-CZ'] = {
+	$__default["default"].fn.bootstrapTable.locales['cs-CZ'] = $__default["default"].fn.bootstrapTable.locales['cs'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Kopírovat řádky';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Tisk';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Čekejte, prosím';
@@ -1121,19 +1427,19 @@
 	    return "Zobrazena ".concat(pageFrom, ". - ").concat(pageTo, " . polo\u017Eka z celkov\xFDch ").concat(totalRows);
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'předchozí strana';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "na stranu ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'další strana';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "Zobrazuji ".concat(totalRows, " \u0159\xE1dek");
 	  },
 	  formatClearSearch: function formatClearSearch() {
-	    return 'Clear Search';
+	    return 'Smazat hledání';
 	  },
 	  formatSearch: function formatSearch() {
 	    return 'Vyhledávání';
@@ -1145,10 +1451,10 @@
 	    return 'Skrýt/Zobrazit stránkování';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'Zobrazit stránkování';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'Skrýt stránkování';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return 'Aktualizovat';
@@ -1157,56 +1463,56 @@
 	    return 'Přepni';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
+	    return 'Zobrazit karty';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
+	    return 'Zobrazit tabulku';
 	  },
 	  formatColumns: function formatColumns() {
 	    return 'Sloupce';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'Zobrazit/Skrýt vše';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return 'Zapnout/Vypnout fullscreen';
 	  },
 	  formatAllRows: function formatAllRows() {
 	    return 'Vše';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Automatické obnovení';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'Export dat';
 	  },
 	  formatJumpTo: function formatJumpTo() {
 	    return 'GO';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'Pokročilé hledání';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'Zavřít';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Skrýt/Zobrazit ovladače';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Skrýt ovladače';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Zobrazit ovladače';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['cs-CZ']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['cs-CZ']);
 
 	/**
 	 * Bootstrap Table danish translation
 	 * Author: Your Name Jan Borup Coyle, github@coyle.dk
 	 */
 
-	$.fn.bootstrapTable.locales['da-DK'] = {
+	$__default["default"].fn.bootstrapTable.locales['da-DK'] = $__default["default"].fn.bootstrapTable.locales['da'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -1305,14 +1611,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['da-DK']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['da-DK']);
 
 	/**
 	* Bootstrap Table German translation
 	* Author: Paul Mohr - Sopamo<p.mohr@sopamo.de>
 	*/
 
-	$.fn.bootstrapTable.locales['de-DE'] = {
+	$__default["default"].fn.bootstrapTable.locales['de-DE'] = $__default["default"].fn.bootstrapTable.locales['de'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Zeilen kopieren';
 	  },
@@ -1393,7 +1699,7 @@
 	    return 'Datenexport';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'Springen';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
 	    return 'Erweiterte Suche';
@@ -1409,16 +1715,55 @@
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
 	    return 'Zeige Filter';
+	  },
+	  formatAddLevel: function formatAddLevel() {
+	    return 'Ebene hinzufügen';
+	  },
+	  formatCancel: function formatCancel() {
+	    return 'Abbrechen';
+	  },
+	  formatColumn: function formatColumn() {
+	    return 'Spalte';
+	  },
+	  formatDeleteLevel: function formatDeleteLevel() {
+	    return 'Ebene entfernen';
+	  },
+	  formatDuplicateAlertTitle: function formatDuplicateAlertTitle() {
+	    return 'Doppelte Einträge gefunden!';
+	  },
+	  formatDuplicateAlertDescription: function formatDuplicateAlertDescription() {
+	    return 'Bitte doppelte Spalten entfenen oder ändern';
+	  },
+	  formatMultipleSort: function formatMultipleSort() {
+	    return 'Mehrfachsortierung';
+	  },
+	  formatOrder: function formatOrder() {
+	    return 'Reihenfolge';
+	  },
+	  formatSort: function formatSort() {
+	    return 'Sortieren';
+	  },
+	  formatSortBy: function formatSortBy() {
+	    return 'Sortieren nach';
+	  },
+	  formatThenBy: function formatThenBy() {
+	    return 'anschließend';
+	  },
+	  formatSortOrders: function formatSortOrders() {
+	    return {
+	      asc: 'Aufsteigend',
+	      desc: 'Absteigend'
+	    };
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['de-DE']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['de-DE']);
 
 	/**
 	 * Bootstrap Table Greek translation
 	 * Author: giannisdallas
 	 */
 
-	$.fn.bootstrapTable.locales['el-GR'] = {
+	$__default["default"].fn.bootstrapTable.locales['el-GR'] = $__default["default"].fn.bootstrapTable.locales['el'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -1517,14 +1862,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['el-GR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['el-GR']);
 
 	/**
 	 * Bootstrap Table English translation
 	 * Author: Zhixin Wen<wenzhixin2010@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['en-US'] = {
+	$__default["default"].fn.bootstrapTable.locales['en-US'] = $__default["default"].fn.bootstrapTable.locales['en'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -1623,7 +1968,7 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['en-US']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['en-US']);
 
 	/**
 	 * Bootstrap Table Spanish (Argentina) translation
@@ -1631,12 +1976,12 @@
 	 * Edited by: DarkThinking (https://github.com/DarkThinking)
 	 */
 
-	$.fn.bootstrapTable.locales['es-AR'] = {
+	$__default["default"].fn.bootstrapTable.locales['es-AR'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Copiar Filas';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Imprimir';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Cargando, espere por favor';
@@ -1730,7 +2075,7 @@
 	    return 'Mostrar controles';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-AR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-AR']);
 
 	/**
 	 * Traducción de librería Bootstrap Table a Español (Chile)
@@ -1738,12 +2083,12 @@
 	 * email brianalvarezazocar@gmail.com
 	 */
 
-	$.fn.bootstrapTable.locales['es-CL'] = {
+	$__default["default"].fn.bootstrapTable.locales['es-CL'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Copiar Filas';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Imprimir';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Cargando, espere por favor';
@@ -1753,22 +2098,22 @@
 	  },
 	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
 	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas (filtered from ").concat(totalNotFiltered, " total rows)");
+	      return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas (filtrado de ").concat(totalNotFiltered, " filas totales)");
 	    }
 
 	    return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas");
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'página anterior';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "a la p\xE1gina ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'siguiente página';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "Mostrando ".concat(totalRows, " filas");
 	  },
 	  formatClearSearch: function formatClearSearch() {
 	    return 'Limpiar búsqueda';
@@ -1780,13 +2125,13 @@
 	    return 'No se encontraron registros';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return "Ocultar/Mostrar paginaci\xF3n";
+	    return 'Ocultar/Mostrar paginación';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'Mostrar paginación';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'Ocultar paginación';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return 'Refrescar';
@@ -1795,243 +2140,31 @@
 	    return 'Cambiar';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
+	    return 'Mostrar vista de carta';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
+	    return 'Ocultar vista de carta';
 	  },
 	  formatColumns: function formatColumns() {
 	    return 'Columnas';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'Cambiar todo';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return 'Pantalla completa';
 	  },
 	  formatAllRows: function formatAllRows() {
 	    return 'Todo';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Auto Recargar';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'Exportar datos';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
-	  },
-	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
-	  },
-	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
-	  },
-	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Ocultar/Mostrar controles';
-	  },
-	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Ocultar controles';
-	  },
-	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Mostrar controles';
-	  }
-	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-CL']);
-
-	/**
-	 * Bootstrap Table Spanish (Costa Rica) translation
-	 * Author: Dennis Hernández (http://djhvscf.github.io/Blog/)
-	 */
-
-	$.fn.bootstrapTable.locales['es-CR'] = {
-	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
-	  },
-	  formatPrint: function formatPrint() {
-	    return 'Print';
-	  },
-	  formatLoadingMessage: function formatLoadingMessage() {
-	    return 'Cargando, por favor espere';
-	  },
-	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
-	    return "".concat(pageNumber, " registros por p\xE1gina");
-	  },
-	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
-	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "Mostrando de ".concat(pageFrom, " a ").concat(pageTo, " registros de ").concat(totalRows, " registros en total (filtered from ").concat(totalNotFiltered, " total rows)");
-	    }
-
-	    return "Mostrando de ".concat(pageFrom, " a ").concat(pageTo, " registros de ").concat(totalRows, " registros en total");
-	  },
-	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
-	  },
-	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
-	  },
-	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
-	  },
-	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
-	  },
-	  formatClearSearch: function formatClearSearch() {
-	    return 'Limpiar búsqueda';
-	  },
-	  formatSearch: function formatSearch() {
-	    return 'Buscar';
-	  },
-	  formatNoMatches: function formatNoMatches() {
-	    return 'No se encontraron registros';
-	  },
-	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Hide/Show pagination';
-	  },
-	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
-	  },
-	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
-	  },
-	  formatRefresh: function formatRefresh() {
-	    return 'Refrescar';
-	  },
-	  formatToggle: function formatToggle() {
-	    return 'Alternar';
-	  },
-	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
-	  },
-	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
-	  },
-	  formatColumns: function formatColumns() {
-	    return 'Columnas';
-	  },
-	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
-	  },
-	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
-	  },
-	  formatAllRows: function formatAllRows() {
-	    return 'Todo';
-	  },
-	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
-	  },
-	  formatExport: function formatExport() {
-	    return 'Export data';
-	  },
-	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
-	  },
-	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
-	  },
-	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
-	  },
-	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Ocultar/Mostrar controles';
-	  },
-	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Ocultar controles';
-	  },
-	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Mostrar controles';
-	  }
-	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-CR']);
-
-	/**
-	 * Bootstrap Table Spanish Spain translation
-	 * Author: Marc Pina<iwalkalone69@gmail.com>
-	 */
-
-	$.fn.bootstrapTable.locales['es-ES'] = {
-	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
-	  },
-	  formatPrint: function formatPrint() {
-	    return 'Print';
-	  },
-	  formatLoadingMessage: function formatLoadingMessage() {
-	    return 'Por favor espere';
-	  },
-	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
-	    return "".concat(pageNumber, " resultados por p\xE1gina");
-	  },
-	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
-	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "Mostrando desde ".concat(pageFrom, " hasta ").concat(pageTo, " - En total ").concat(totalRows, " resultados (filtered from ").concat(totalNotFiltered, " total rows)");
-	    }
-
-	    return "Mostrando desde ".concat(pageFrom, " hasta ").concat(pageTo, " - En total ").concat(totalRows, " resultados");
-	  },
-	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
-	  },
-	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
-	  },
-	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
-	  },
-	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
-	  },
-	  formatClearSearch: function formatClearSearch() {
-	    return 'Limpiar búsqueda';
-	  },
-	  formatSearch: function formatSearch() {
-	    return 'Buscar';
-	  },
-	  formatNoMatches: function formatNoMatches() {
-	    return 'No se encontraron resultados';
-	  },
-	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Ocultar/Mostrar paginación';
-	  },
-	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
-	  },
-	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
-	  },
-	  formatRefresh: function formatRefresh() {
-	    return 'Refrescar';
-	  },
-	  formatToggle: function formatToggle() {
-	    return 'Ocultar/Mostrar';
-	  },
-	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
-	  },
-	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
-	  },
-	  formatColumns: function formatColumns() {
-	    return 'Columnas';
-	  },
-	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
-	  },
-	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
-	  },
-	  formatAllRows: function formatAllRows() {
-	    return 'Todos';
-	  },
-	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
-	  },
-	  formatExport: function formatExport() {
-	    return 'Exportar los datos';
-	  },
-	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'IR';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
 	    return 'Búsqueda avanzada';
@@ -2049,122 +2182,14 @@
 	    return 'Mostrar controles';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-ES']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-CL']);
 
 	/**
-	 * Bootstrap Table Spanish (México) translation (Obtenido de traducción de Argentina)
-	 * Author: Felix Vera (felix.vera@gmail.com)
-	 * Copiado: Mauricio Vera (mauricioa.vera@gmail.com)
-	 * Revisión: J Manuel Corona (jmcg92@gmail.com) (13/Feb/2018).
-	 */
-
-	$.fn.bootstrapTable.locales['es-MX'] = {
-	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
-	  },
-	  formatPrint: function formatPrint() {
-	    return 'Print';
-	  },
-	  formatLoadingMessage: function formatLoadingMessage() {
-	    return 'Cargando, espere por favor';
-	  },
-	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
-	    return "".concat(pageNumber, " registros por p\xE1gina");
-	  },
-	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
-	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas (filtered from ").concat(totalNotFiltered, " total rows)");
-	    }
-
-	    return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas");
-	  },
-	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
-	  },
-	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
-	  },
-	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
-	  },
-	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Mostrando ".concat(totalRows, " filas");
-	  },
-	  formatClearSearch: function formatClearSearch() {
-	    return 'Limpiar búsqueda';
-	  },
-	  formatSearch: function formatSearch() {
-	    return 'Buscar';
-	  },
-	  formatNoMatches: function formatNoMatches() {
-	    return 'No se encontraron registros que coincidan';
-	  },
-	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Mostrar/ocultar paginación';
-	  },
-	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
-	  },
-	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
-	  },
-	  formatRefresh: function formatRefresh() {
-	    return 'Actualizar';
-	  },
-	  formatToggle: function formatToggle() {
-	    return 'Cambiar vista';
-	  },
-	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
-	  },
-	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
-	  },
-	  formatColumns: function formatColumns() {
-	    return 'Columnas';
-	  },
-	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
-	  },
-	  formatFullscreen: function formatFullscreen() {
-	    return 'Pantalla completa';
-	  },
-	  formatAllRows: function formatAllRows() {
-	    return 'Todo';
-	  },
-	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
-	  },
-	  formatExport: function formatExport() {
-	    return 'Export data';
-	  },
-	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
-	  },
-	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
-	  },
-	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
-	  },
-	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Ocultar/Mostrar controles';
-	  },
-	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Ocultar controles';
-	  },
-	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Mostrar controles';
-	  }
-	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-MX']);
-
-	/**
-	 * Bootstrap Table Spanish (Nicaragua) translation
+	 * Bootstrap Table Spanish (Costa Rica) translation
 	 * Author: Dennis Hernández (http://djhvscf.github.io/Blog/)
 	 */
 
-	$.fn.bootstrapTable.locales['es-NI'] = {
+	$__default["default"].fn.bootstrapTable.locales['es-CR'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -2263,14 +2288,335 @@
 	    return 'Mostrar controles';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-NI']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-CR']);
+
+	/**
+	 * Bootstrap Table Spanish Spain translation
+	 * Author: Marc Pina<iwalkalone69@gmail.com>
+	 */
+
+	$__default["default"].fn.bootstrapTable.locales['es-ES'] = $__default["default"].fn.bootstrapTable.locales['es'] = {
+	  formatCopyRows: function formatCopyRows() {
+	    return 'Copiar filas';
+	  },
+	  formatPrint: function formatPrint() {
+	    return 'Imprimir';
+	  },
+	  formatLoadingMessage: function formatLoadingMessage() {
+	    return 'Por favor espere';
+	  },
+	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
+	    return "".concat(pageNumber, " resultados por p\xE1gina");
+	  },
+	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
+	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
+	      return "Mostrando desde ".concat(pageFrom, " hasta ").concat(pageTo, " - En total ").concat(totalRows, " resultados (filtrado de ").concat(totalNotFiltered, " filas totales)");
+	    }
+
+	    return "Mostrando desde ".concat(pageFrom, " hasta ").concat(pageTo, " - En total ").concat(totalRows, " resultados");
+	  },
+	  formatSRPaginationPreText: function formatSRPaginationPreText() {
+	    return 'página anterior';
+	  },
+	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
+	    return "a la p\xE1gina ".concat(page);
+	  },
+	  formatSRPaginationNextText: function formatSRPaginationNextText() {
+	    return 'siguiente página';
+	  },
+	  formatDetailPagination: function formatDetailPagination(totalRows) {
+	    return "Mostrando ".concat(totalRows, " filas");
+	  },
+	  formatClearSearch: function formatClearSearch() {
+	    return 'Limpiar búsqueda';
+	  },
+	  formatSearch: function formatSearch() {
+	    return 'Buscar';
+	  },
+	  formatNoMatches: function formatNoMatches() {
+	    return 'No se encontraron resultados';
+	  },
+	  formatPaginationSwitch: function formatPaginationSwitch() {
+	    return 'Ocultar/Mostrar paginación';
+	  },
+	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
+	    return 'Mostrar paginación';
+	  },
+	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
+	    return 'Ocultar paginación';
+	  },
+	  formatRefresh: function formatRefresh() {
+	    return 'Recargar';
+	  },
+	  formatToggle: function formatToggle() {
+	    return 'Ocultar/Mostrar';
+	  },
+	  formatToggleOn: function formatToggleOn() {
+	    return 'Mostrar vista de carta';
+	  },
+	  formatToggleOff: function formatToggleOff() {
+	    return 'Ocultar vista de carta';
+	  },
+	  formatColumns: function formatColumns() {
+	    return 'Columnas';
+	  },
+	  formatColumnsToggleAll: function formatColumnsToggleAll() {
+	    return 'Cambiar todo';
+	  },
+	  formatFullscreen: function formatFullscreen() {
+	    return 'Pantalla completa';
+	  },
+	  formatAllRows: function formatAllRows() {
+	    return 'Todos';
+	  },
+	  formatAutoRefresh: function formatAutoRefresh() {
+	    return 'Auto Recargar';
+	  },
+	  formatExport: function formatExport() {
+	    return 'Exportar los datos';
+	  },
+	  formatJumpTo: function formatJumpTo() {
+	    return 'IR';
+	  },
+	  formatAdvancedSearch: function formatAdvancedSearch() {
+	    return 'Búsqueda avanzada';
+	  },
+	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
+	    return 'Cerrar';
+	  },
+	  formatFilterControlSwitch: function formatFilterControlSwitch() {
+	    return 'Ocultar/Mostrar controles';
+	  },
+	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
+	    return 'Ocultar controles';
+	  },
+	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
+	    return 'Mostrar controles';
+	  }
+	};
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-ES']);
+
+	/**
+	 * Bootstrap Table Spanish (México) translation (Obtenido de traducción de Argentina)
+	 * Author: Felix Vera (felix.vera@gmail.com)
+	 * Copiado: Mauricio Vera (mauricioa.vera@gmail.com)
+	 * Revisión: J Manuel Corona (jmcg92@gmail.com) (13/Feb/2018).
+	 * Revisión: Ricardo González (rickygzz85@gmail.com) (20/Oct/2021)
+	 */
+
+	$__default["default"].fn.bootstrapTable.locales['es-MX'] = {
+	  formatCopyRows: function formatCopyRows() {
+	    return 'Copiar Filas';
+	  },
+	  formatPrint: function formatPrint() {
+	    return 'Imprimir';
+	  },
+	  formatLoadingMessage: function formatLoadingMessage() {
+	    return 'Cargando, espere por favor';
+	  },
+	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
+	    return "".concat(pageNumber, " resultados por p\xE1gina");
+	  },
+	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
+	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
+	      return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas (filtrado de ").concat(totalNotFiltered, " filas totales)");
+	    }
+
+	    return "Mostrando ".concat(pageFrom, " a ").concat(pageTo, " de ").concat(totalRows, " filas");
+	  },
+	  formatSRPaginationPreText: function formatSRPaginationPreText() {
+	    return 'página anterior';
+	  },
+	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
+	    return "ir a la p\xE1gina ".concat(page);
+	  },
+	  formatSRPaginationNextText: function formatSRPaginationNextText() {
+	    return 'página siguiente';
+	  },
+	  formatDetailPagination: function formatDetailPagination(totalRows) {
+	    return "Mostrando ".concat(totalRows, " filas");
+	  },
+	  formatClearSearch: function formatClearSearch() {
+	    return 'Limpiar búsqueda';
+	  },
+	  formatSearch: function formatSearch() {
+	    return 'Buscar';
+	  },
+	  formatNoMatches: function formatNoMatches() {
+	    return 'No se encontraron registros que coincidan';
+	  },
+	  formatPaginationSwitch: function formatPaginationSwitch() {
+	    return 'Mostrar/ocultar paginación';
+	  },
+	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
+	    return 'Mostrar paginación';
+	  },
+	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
+	    return 'Ocultar paginación';
+	  },
+	  formatRefresh: function formatRefresh() {
+	    return 'Actualizar';
+	  },
+	  formatToggle: function formatToggle() {
+	    return 'Cambiar vista';
+	  },
+	  formatToggleOn: function formatToggleOn() {
+	    return 'Mostrar vista';
+	  },
+	  formatToggleOff: function formatToggleOff() {
+	    return 'Ocultar vista';
+	  },
+	  formatColumns: function formatColumns() {
+	    return 'Columnas';
+	  },
+	  formatColumnsToggleAll: function formatColumnsToggleAll() {
+	    return 'Alternar todo';
+	  },
+	  formatFullscreen: function formatFullscreen() {
+	    return 'Pantalla completa';
+	  },
+	  formatAllRows: function formatAllRows() {
+	    return 'Todo';
+	  },
+	  formatAutoRefresh: function formatAutoRefresh() {
+	    return 'Auto actualizar';
+	  },
+	  formatExport: function formatExport() {
+	    return 'Exportar datos';
+	  },
+	  formatJumpTo: function formatJumpTo() {
+	    return 'IR';
+	  },
+	  formatAdvancedSearch: function formatAdvancedSearch() {
+	    return 'Búsqueda avanzada';
+	  },
+	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
+	    return 'Cerrar';
+	  },
+	  formatFilterControlSwitch: function formatFilterControlSwitch() {
+	    return 'Ocultar/Mostrar controles';
+	  },
+	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
+	    return 'Ocultar controles';
+	  },
+	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
+	    return 'Mostrar controles';
+	  }
+	};
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-MX']);
+
+	/**
+	 * Bootstrap Table Spanish (Nicaragua) translation
+	 * Author: Dennis Hernández (http://djhvscf.github.io/Blog/)
+	 */
+
+	$__default["default"].fn.bootstrapTable.locales['es-NI'] = {
+	  formatCopyRows: function formatCopyRows() {
+	    return 'Copy Rows';
+	  },
+	  formatPrint: function formatPrint() {
+	    return 'Print';
+	  },
+	  formatLoadingMessage: function formatLoadingMessage() {
+	    return 'Cargando, por favor espere';
+	  },
+	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
+	    return "".concat(pageNumber, " registros por p\xE1gina");
+	  },
+	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
+	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
+	      return "Mostrando de ".concat(pageFrom, " a ").concat(pageTo, " registros de ").concat(totalRows, " registros en total (filtered from ").concat(totalNotFiltered, " total rows)");
+	    }
+
+	    return "Mostrando de ".concat(pageFrom, " a ").concat(pageTo, " registros de ").concat(totalRows, " registros en total");
+	  },
+	  formatSRPaginationPreText: function formatSRPaginationPreText() {
+	    return 'previous page';
+	  },
+	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
+	    return "to page ".concat(page);
+	  },
+	  formatSRPaginationNextText: function formatSRPaginationNextText() {
+	    return 'next page';
+	  },
+	  formatDetailPagination: function formatDetailPagination(totalRows) {
+	    return "Showing ".concat(totalRows, " rows");
+	  },
+	  formatClearSearch: function formatClearSearch() {
+	    return 'Limpiar búsqueda';
+	  },
+	  formatSearch: function formatSearch() {
+	    return 'Buscar';
+	  },
+	  formatNoMatches: function formatNoMatches() {
+	    return 'No se encontraron registros';
+	  },
+	  formatPaginationSwitch: function formatPaginationSwitch() {
+	    return 'Hide/Show pagination';
+	  },
+	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
+	    return 'Show pagination';
+	  },
+	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
+	    return 'Hide pagination';
+	  },
+	  formatRefresh: function formatRefresh() {
+	    return 'Refrescar';
+	  },
+	  formatToggle: function formatToggle() {
+	    return 'Alternar';
+	  },
+	  formatToggleOn: function formatToggleOn() {
+	    return 'Show card view';
+	  },
+	  formatToggleOff: function formatToggleOff() {
+	    return 'Hide card view';
+	  },
+	  formatColumns: function formatColumns() {
+	    return 'Columnas';
+	  },
+	  formatColumnsToggleAll: function formatColumnsToggleAll() {
+	    return 'Toggle all';
+	  },
+	  formatFullscreen: function formatFullscreen() {
+	    return 'Fullscreen';
+	  },
+	  formatAllRows: function formatAllRows() {
+	    return 'Todo';
+	  },
+	  formatAutoRefresh: function formatAutoRefresh() {
+	    return 'Auto Refresh';
+	  },
+	  formatExport: function formatExport() {
+	    return 'Export data';
+	  },
+	  formatJumpTo: function formatJumpTo() {
+	    return 'GO';
+	  },
+	  formatAdvancedSearch: function formatAdvancedSearch() {
+	    return 'Advanced search';
+	  },
+	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
+	    return 'Close';
+	  },
+	  formatFilterControlSwitch: function formatFilterControlSwitch() {
+	    return 'Ocultar/Mostrar controles';
+	  },
+	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
+	    return 'Ocultar controles';
+	  },
+	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
+	    return 'Mostrar controles';
+	  }
+	};
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-NI']);
 
 	/**
 	 * Bootstrap Table Spanish (España) translation
 	 * Author: Antonio Pérez <anpegar@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['es-SP'] = {
+	$__default["default"].fn.bootstrapTable.locales['es-SP'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -2369,14 +2715,14 @@
 	    return 'Mostrar controles';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-SP']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['es-SP']);
 
 	/**
 	 * Bootstrap Table Estonian translation
 	 * Author: kristjan@logist.it>
 	 */
 
-	$.fn.bootstrapTable.locales['et-EE'] = {
+	$__default["default"].fn.bootstrapTable.locales['et-EE'] = $__default["default"].fn.bootstrapTable.locales['et'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -2475,14 +2821,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['et-EE']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['et-EE']);
 
 	/**
 	 * Bootstrap Table Basque (Basque Country) translation
 	 * Author: Iker Ibarguren Berasaluze<ikerib@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['eu-EU'] = {
+	$__default["default"].fn.bootstrapTable.locales['eu-EU'] = $__default["default"].fn.bootstrapTable.locales['eu'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -2581,19 +2927,19 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['eu-EU']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['eu-EU']);
 
 	/**
 	 * Bootstrap Table Persian translation
 	 * Author: MJ Vakili <mjv.1989@Gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['fa-IR'] = {
+	$__default["default"].fn.bootstrapTable.locales['fa-IR'] = $__default["default"].fn.bootstrapTable.locales['fa'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'کپی ردیف ها';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'پرینت';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'در حال بارگذاری, لطفا صبر کنید';
@@ -2609,19 +2955,19 @@
 	    return "\u0646\u0645\u0627\u06CC\u0634 ".concat(pageFrom, " \u062A\u0627 ").concat(pageTo, " \u0627\u0632 ").concat(totalRows, " \u0631\u062F\u06CC\u0641");
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'صفحه قبلی';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "\u0628\u0647 \u0635\u0641\u062D\u0647 ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'صفحه بعدی';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "\u0646\u0645\u0627\u06CC\u0634 ".concat(totalRows, " \u0633\u0637\u0631\u0647\u0627");
 	  },
 	  formatClearSearch: function formatClearSearch() {
-	    return 'Clear Search';
+	    return 'پاک کردن جستجو';
 	  },
 	  formatSearch: function formatSearch() {
 	    return 'جستجو';
@@ -2633,10 +2979,10 @@
 	    return 'نمایش/مخفی صفحه بندی';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'نمایش صفحه بندی';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'پنهان کردن صفحه بندی';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return 'به روز رسانی';
@@ -2654,47 +3000,47 @@
 	    return 'سطر ها';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'تغییر وضعیت همه';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return 'تمام صفحه';
 	  },
 	  formatAllRows: function formatAllRows() {
 	    return 'همه';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'رفرش اتوماتیک';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'خروجی دیتا';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'برو';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'جستجوی پیشرفته';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'بستن';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'پنهان/نمایش دادن کنترل ها';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'پنهان کردن کنترل ها';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'نمایش کنترل ها';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fa-IR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['fa-IR']);
 
 	/**
 	 * Bootstrap Table Finnish translations
 	 * Author: Minna Lehtomäki <minna.j.lehtomaki@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['fi-FI'] = {
+	$__default["default"].fn.bootstrapTable.locales['fi-FI'] = $__default["default"].fn.bootstrapTable.locales['fi'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -2793,7 +3139,7 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fi-FI']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['fi-FI']);
 
 	/**
 	 * Bootstrap Table French (Belgium) translation
@@ -2801,7 +3147,7 @@
 	 *         Nevets82 <Nevets82@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['fr-BE'] = {
+	$__default["default"].fn.bootstrapTable.locales['fr-BE'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -2900,14 +3246,14 @@
 	    return 'Afficher controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fr-BE']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['fr-BE']);
 
 	/**
 	 * Bootstrap Table French (Suisse) translation
 	 * Author: Nevets82 <Nevets82@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['fr-CH'] = {
+	$__default["default"].fn.bootstrapTable.locales['fr-CH'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3006,7 +3352,7 @@
 	    return 'Afficher controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fr-CH']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['fr-CH']);
 
 	/**
 	 * Bootstrap Table French (France) translation
@@ -3015,12 +3361,12 @@
 	 *         Nevets82 <Nevets82@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['fr-FR'] = {
+	$__default["default"].fn.bootstrapTable.locales['fr-FR'] = $__default["default"].fn.bootstrapTable.locales['fr'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Copier les lignes';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Imprimer';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Chargement en cours';
@@ -3057,25 +3403,25 @@
 	    return 'Aucun résultat';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Cacher/Afficher pagination';
+	    return 'Masquer/Afficher la pagination';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Afficher pagination';
+	    return 'Afficher la pagination';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Cacher pagination';
+	    return 'Masquer la pagination';
 	  },
 	  formatRefresh: function formatRefresh() {
-	    return 'Rafraichir';
+	    return 'Actualiser';
 	  },
 	  formatToggle: function formatToggle() {
 	    return 'Basculer';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Afficher vue carte';
+	    return 'Afficher la vue carte';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Cacher vue carte';
+	    return 'Masquer la vue carte';
 	  },
 	  formatColumns: function formatColumns() {
 	    return 'Colonnes';
@@ -3090,13 +3436,13 @@
 	    return 'Tout';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Rafraîchissement automatique';
+	    return 'Actualisation automatique';
 	  },
 	  formatExport: function formatExport() {
 	    return 'Exporter les données';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'Aller à';
+	    return 'ALLER';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
 	    return 'Recherche avancée';
@@ -3105,28 +3451,29 @@
 	    return 'Fermer';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Cacher/Afficher controls';
+	    return 'Masquer/Afficher les contrôles';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Cacher controls';
+	    return 'Masquer les contrôles';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Afficher controls';
+	    return 'Afficher les contrôles';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fr-FR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['fr-FR']);
 
 	/**
 	 * Bootstrap Table French (Luxembourg) translation
 	 * Author: Nevets82 <Nevets82@gmail.com>
+	 * Editor: David Morais Ferreira (https://github.com/DavidMoraisFerreira/)
 	 */
 
-	$.fn.bootstrapTable.locales['fr-LU'] = {
+	$__default["default"].fn.bootstrapTable.locales['fr-LU'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Copier les lignes';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Imprimer';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Chargement en cours';
@@ -3220,14 +3567,14 @@
 	    return 'Afficher controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fr-LU']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['fr-LU']);
 
 	/**
 	 * Bootstrap Table Hebrew translation
 	 * Author: legshooter
 	 */
 
-	$.fn.bootstrapTable.locales['he-IL'] = {
+	$__default["default"].fn.bootstrapTable.locales['he-IL'] = $__default["default"].fn.bootstrapTable.locales['he'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3326,7 +3673,113 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['he-IL']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['he-IL']);
+
+	/**
+	 * Bootstrap Table Hindi translation
+	 * Author: Saurabh Sharma <saurabhsharma2u@gmail.com>
+	 */
+
+	$__default["default"].fn.bootstrapTable.locales['hi-IN'] = {
+	  formatCopyRows: function formatCopyRows() {
+	    return 'पंक्तियों की कॉपी करें';
+	  },
+	  formatPrint: function formatPrint() {
+	    return 'प्रिंट';
+	  },
+	  formatLoadingMessage: function formatLoadingMessage() {
+	    return 'लोड हो रहा है कृपया प्रतीक्षा करें';
+	  },
+	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
+	    return "".concat(pageNumber, " \u092A\u094D\u0930\u0924\u093F \u092A\u0943\u0937\u094D\u0920 \u092A\u0902\u0915\u094D\u0924\u093F\u092F\u093E\u0901");
+	  },
+	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
+	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
+	      return "".concat(pageFrom, " - ").concat(pageTo, " \u092A\u0915\u094D\u0924\u093F\u092F\u093E ").concat(totalRows, " \u092E\u0947\u0902 \u0938\u0947 ( ").concat(totalNotFiltered, " \u092A\u0915\u094D\u0924\u093F\u092F\u093E)");
+	    }
+
+	    return "".concat(pageFrom, " - ").concat(pageTo, " \u092A\u0915\u094D\u0924\u093F\u092F\u093E ").concat(totalRows, " \u092E\u0947\u0902 \u0938\u0947");
+	  },
+	  formatSRPaginationPreText: function formatSRPaginationPreText() {
+	    return 'पिछला पृष्ठ';
+	  },
+	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
+	    return "".concat(page, " \u092A\u0943\u0937\u094D\u0920 \u092A\u0930");
+	  },
+	  formatSRPaginationNextText: function formatSRPaginationNextText() {
+	    return 'अगला पृष्ठ';
+	  },
+	  formatDetailPagination: function formatDetailPagination(totalRows) {
+	    return "".concat(totalRows, " \u092A\u0902\u0915\u094D\u0924\u093F\u092F\u093E\u0902");
+	  },
+	  formatClearSearch: function formatClearSearch() {
+	    return 'सर्च क्लिअर करें';
+	  },
+	  formatSearch: function formatSearch() {
+	    return 'सर्च';
+	  },
+	  formatNoMatches: function formatNoMatches() {
+	    return 'मेल खाते रिकॉर्ड नही मिले';
+	  },
+	  formatPaginationSwitch: function formatPaginationSwitch() {
+	    return 'छुपाओ/दिखाओ पृष्ठ संख्या';
+	  },
+	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
+	    return 'दिखाओ पृष्ठ संख्या';
+	  },
+	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
+	    return 'छुपाओ पृष्ठ संख्या';
+	  },
+	  formatRefresh: function formatRefresh() {
+	    return 'रिफ्रेश';
+	  },
+	  formatToggle: function formatToggle() {
+	    return 'टॉगल';
+	  },
+	  formatToggleOn: function formatToggleOn() {
+	    return 'कार्ड दृश्य दिखाएं';
+	  },
+	  formatToggleOff: function formatToggleOff() {
+	    return 'कार्ड दृश्य छुपाएं';
+	  },
+	  formatColumns: function formatColumns() {
+	    return 'कॉलम';
+	  },
+	  formatColumnsToggleAll: function formatColumnsToggleAll() {
+	    return 'टॉगल आल';
+	  },
+	  formatFullscreen: function formatFullscreen() {
+	    return 'पूर्ण स्क्रीन';
+	  },
+	  formatAllRows: function formatAllRows() {
+	    return 'सब';
+	  },
+	  formatAutoRefresh: function formatAutoRefresh() {
+	    return 'ऑटो रिफ्रेश';
+	  },
+	  formatExport: function formatExport() {
+	    return 'एक्सपोर्ट डाटा';
+	  },
+	  formatJumpTo: function formatJumpTo() {
+	    return 'जाओ';
+	  },
+	  formatAdvancedSearch: function formatAdvancedSearch() {
+	    return 'एडवांस सर्च';
+	  },
+	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
+	    return 'बंद करे';
+	  },
+	  formatFilterControlSwitch: function formatFilterControlSwitch() {
+	    return 'छुपाओ/दिखाओ कंट्रोल्स';
+	  },
+	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
+	    return 'छुपाओ कंट्रोल्स';
+	  },
+	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
+	    return 'दिखाओ कंट्रोल्स';
+	  }
+	};
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['hi-IN']);
 
 	/**
 	* Bootstrap Table Croatian translation
@@ -3334,7 +3787,7 @@
 	* Author: Petra Štrbenac (petra.strbenac@gmail.com)
 	*/
 
-	$.fn.bootstrapTable.locales['hr-HR'] = {
+	$__default["default"].fn.bootstrapTable.locales['hr-HR'] = $__default["default"].fn.bootstrapTable.locales['hr'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3433,14 +3886,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['hr-HR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['hr-HR']);
 
 	/**
 	 * Bootstrap Table Hungarian translation
 	 * Author: Nagy Gergely <info@nagygergely.eu>
 	 */
 
-	$.fn.bootstrapTable.locales['hu-HU'] = {
+	$__default["default"].fn.bootstrapTable.locales['hu-HU'] = $__default["default"].fn.bootstrapTable.locales['hu'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3539,14 +3992,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['hu-HU']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['hu-HU']);
 
 	/**
 	 * Bootstrap Table Indonesian translation
 	 * Author: Andre Gardiner<andre@sirdre.com>
 	 */
 
-	$.fn.bootstrapTable.locales['id-ID'] = {
+	$__default["default"].fn.bootstrapTable.locales['id-ID'] = $__default["default"].fn.bootstrapTable.locales['id'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3645,7 +4098,7 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['id-ID']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['id-ID']);
 
 	/**
 	 * Bootstrap Table Italian translation
@@ -3654,7 +4107,7 @@
 	 * Author: Alessio Felicioni <alessio.felicioni@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['it-IT'] = {
+	$__default["default"].fn.bootstrapTable.locales['it-IT'] = $__default["default"].fn.bootstrapTable.locales['it'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3753,14 +4206,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['it-IT']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['it-IT']);
 
 	/**
 	 * Bootstrap Table Japanese translation
 	 * Author: Azamshul Azizy <azamshul@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ja-JP'] = {
+	$__default["default"].fn.bootstrapTable.locales['ja-JP'] = $__default["default"].fn.bootstrapTable.locales['ja'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3859,14 +4312,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ja-JP']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ja-JP']);
 
 	/**
 	 * Bootstrap Table Georgian translation
 	 * Author: Levan Lotuashvili <l.lotuashvili@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ka-GE'] = {
+	$__default["default"].fn.bootstrapTable.locales['ka-GE'] = $__default["default"].fn.bootstrapTable.locales['ka'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -3965,19 +4418,20 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ka-GE']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ka-GE']);
 
 	/**
 	 * Bootstrap Table Korean translation
 	 * Author: Yi Tae-Hyeong (jsonobject@gmail.com)
+	 * Revision: Abel Yeom (abel.yeom@gmail.com)
 	 */
 
-	$.fn.bootstrapTable.locales['ko-KR'] = {
+	$__default["default"].fn.bootstrapTable.locales['ko-KR'] = $__default["default"].fn.bootstrapTable.locales['ko'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return '행 복사';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return '프린트';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return '데이터를 불러오는 중입니다';
@@ -3987,25 +4441,25 @@
 	  },
 	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
 	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "\uC804\uCCB4 ".concat(totalRows, "\uAC1C \uC911 ").concat(pageFrom, "~").concat(pageTo, "\uBC88\uC9F8 \uB370\uC774\uD130 \uCD9C\uB825, (filtered from ").concat(totalNotFiltered, " total rows)");
+	      return "\uC804\uCCB4 ".concat(totalRows, "\uAC1C \uC911 ").concat(pageFrom, "~").concat(pageTo, "\uBC88\uC9F8 \uB370\uC774\uD130 \uCD9C\uB825, (\uC804\uCCB4 ").concat(totalNotFiltered, " \uD589\uC5D0\uC11C \uD544\uD130\uB428)");
 	    }
 
 	    return "\uC804\uCCB4 ".concat(totalRows, "\uAC1C \uC911 ").concat(pageFrom, "~").concat(pageTo, "\uBC88\uC9F8 \uB370\uC774\uD130 \uCD9C\uB825,");
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return '이전 페이지';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "".concat(page, " \uD398\uC774\uC9C0\uB85C \uC774\uB3D9");
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return '다음 페이지';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "".concat(totalRows, " \uD589\uB4E4 \uD45C\uC2DC \uC911");
 	  },
 	  formatClearSearch: function formatClearSearch() {
-	    return 'Clear Search';
+	    return '검색 초기화';
 	  },
 	  formatSearch: function formatSearch() {
 	    return '검색';
@@ -4014,13 +4468,13 @@
 	    return '조회된 데이터가 없습니다.';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Hide/Show pagination';
+	    return '페이지 넘버 보기/숨기기';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return '페이지 넘버 보기';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return '페이지 넘버 숨기기';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return '새로 고침';
@@ -4029,56 +4483,162 @@
 	    return '전환';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
+	    return '카드뷰 보기';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
+	    return '카드뷰 숨기기';
 	  },
 	  formatColumns: function formatColumns() {
 	    return '컬럼 필터링';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return '전체 토글';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return '전체 화면';
+	  },
+	  formatAllRows: function formatAllRows() {
+	    return '전체';
+	  },
+	  formatAutoRefresh: function formatAutoRefresh() {
+	    return '자동 갱신';
+	  },
+	  formatExport: function formatExport() {
+	    return '데이터 추출';
+	  },
+	  formatJumpTo: function formatJumpTo() {
+	    return '이동';
+	  },
+	  formatAdvancedSearch: function formatAdvancedSearch() {
+	    return '심화 검색';
+	  },
+	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
+	    return '닫기';
+	  },
+	  formatFilterControlSwitch: function formatFilterControlSwitch() {
+	    return '컨트롤 보기/숨기기';
+	  },
+	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
+	    return '컨트롤 숨기기';
+	  },
+	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
+	    return '컨트롤 보기';
+	  }
+	};
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ko-KR']);
+
+	/**
+	 * Bootstrap Table Luxembourgish translation
+	 * Author: David Morais Ferreira (https://github.com/DavidMoraisFerreira)
+	 */
+
+	$__default["default"].fn.bootstrapTable.locales['lb-LU'] = $__default["default"].fn.bootstrapTable.locales['lb'] = {
+	  formatCopyRows: function formatCopyRows() {
+	    return 'Zeilen kopéieren';
+	  },
+	  formatPrint: function formatPrint() {
+	    return 'Drécken';
+	  },
+	  formatLoadingMessage: function formatLoadingMessage() {
+	    return 'Gëtt gelueden, gedellëgt Iech wannechgelift ee Moment';
+	  },
+	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
+	    return "".concat(pageNumber, " Zeilen per S\xE4it");
+	  },
+	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
+	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
+	      return "Weist Zeil ".concat(pageFrom, " bis ").concat(pageTo, " vun ").concat(totalRows, " Zeil").concat(totalRows > 1 ? 'en' : '', " (gefiltert vun insgesamt ").concat(totalNotFiltered, " Zeil").concat(totalRows > 1 ? 'en' : '', ")");
+	    }
+
+	    return "Weist Zeil ".concat(pageFrom, " bis ").concat(pageTo, " vun ").concat(totalRows, " Zeil").concat(totalRows > 1 ? 'en' : '');
+	  },
+	  formatSRPaginationPreText: function formatSRPaginationPreText() {
+	    return 'viregt Säit';
+	  },
+	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
+	    return "op S\xE4it ".concat(page);
+	  },
+	  formatSRPaginationNextText: function formatSRPaginationNextText() {
+	    return 'nächst Säit';
+	  },
+	  formatDetailPagination: function formatDetailPagination(totalRows) {
+	    return "Weist ".concat(totalRows, " Zeilen");
+	  },
+	  formatClearSearch: function formatClearSearch() {
+	    return 'Sich réckgängeg maachen';
+	  },
+	  formatSearch: function formatSearch() {
+	    return 'Sich';
+	  },
+	  formatNoMatches: function formatNoMatches() {
+	    return 'Keng passend Anträg fonnt';
+	  },
+	  formatPaginationSwitch: function formatPaginationSwitch() {
+	    return 'Paginatioun uweisen/verstoppen';
+	  },
+	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
+	    return 'Paginatioun uweisen';
+	  },
+	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
+	    return 'Paginatioun verstoppen';
+	  },
+	  formatRefresh: function formatRefresh() {
+	    return 'Nei lueden';
+	  },
+	  formatToggle: function formatToggle() {
+	    return 'Ëmschalten';
+	  },
+	  formatToggleOn: function formatToggleOn() {
+	    return 'Kaartenusiicht uweisen';
+	  },
+	  formatToggleOff: function formatToggleOff() {
+	    return 'Kaartenusiicht verstoppen';
+	  },
+	  formatColumns: function formatColumns() {
+	    return 'Kolonnen';
+	  },
+	  formatColumnsToggleAll: function formatColumnsToggleAll() {
+	    return 'All ëmschalten';
+	  },
+	  formatFullscreen: function formatFullscreen() {
+	    return 'Vollbild';
 	  },
 	  formatAllRows: function formatAllRows() {
 	    return 'All';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Automatescht neilueden';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'Daten exportéieren';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'Sprangen';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'Erweidert Sich';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'Zoumaachen';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Schaltelementer uweisen/verstoppen';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Schaltelementer verstoppen';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Schaltelementer uweisen';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ko-KR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['lb-LU']);
 
 	/**
 	 * Bootstrap Table Malay translation
 	 * Author: Azamshul Azizy <azamshul@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ms-MY'] = {
+	$__default["default"].fn.bootstrapTable.locales['ms-MY'] = $__default["default"].fn.bootstrapTable.locales['ms'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -4177,14 +4737,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ms-MY']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ms-MY']);
 
 	/**
 	 * Bootstrap Table norwegian translation
 	 * Author: Jim Nordbø, jim@nordb.no
 	 */
 
-	$.fn.bootstrapTable.locales['nb-NO'] = {
+	$__default["default"].fn.bootstrapTable.locales['nb-NO'] = $__default["default"].fn.bootstrapTable.locales['nb'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -4283,14 +4843,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['nb-NO']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['nb-NO']);
 
 	/**
 	 * Bootstrap Table Dutch (België) translation
 	 * Author: Nevets82 <Nevets82@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['nl-BE'] = {
+	$__default["default"].fn.bootstrapTable.locales['nl-BE'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -4387,9 +4947,48 @@
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
 	    return 'Toon controls';
+	  },
+	  formatAddLevel: function formatAddLevel() {
+	    return 'Niveau toevoegen';
+	  },
+	  formatCancel: function formatCancel() {
+	    return 'Annuleren';
+	  },
+	  formatColumn: function formatColumn() {
+	    return 'Kolom';
+	  },
+	  formatDeleteLevel: function formatDeleteLevel() {
+	    return 'Niveau verwijderen';
+	  },
+	  formatDuplicateAlertTitle: function formatDuplicateAlertTitle() {
+	    return 'Duplicaten gevonden!';
+	  },
+	  formatDuplicateAlertDescription: function formatDuplicateAlertDescription() {
+	    return 'Gelieve dubbele kolommen te verwijderen of wijzigen';
+	  },
+	  formatMultipleSort: function formatMultipleSort() {
+	    return 'Meervoudige sortering';
+	  },
+	  formatOrder: function formatOrder() {
+	    return 'Volgorde';
+	  },
+	  formatSort: function formatSort() {
+	    return 'Sorteren';
+	  },
+	  formatSortBy: function formatSortBy() {
+	    return 'Sorteren op';
+	  },
+	  formatThenBy: function formatThenBy() {
+	    return 'vervolgens';
+	  },
+	  formatSortOrders: function formatSortOrders() {
+	    return {
+	      asc: 'Oplopend',
+	      desc: 'Aflopend'
+	    };
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['nl-BE']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['nl-BE']);
 
 	/**
 	 * Bootstrap Table Dutch (Nederland) translation
@@ -4397,7 +4996,7 @@
 	 *         Nevets82 <Nevets82@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['nl-NL'] = {
+	$__default["default"].fn.bootstrapTable.locales['nl-NL'] = $__default["default"].fn.bootstrapTable.locales['nl'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -4494,18 +5093,58 @@
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
 	    return 'Toon controls';
+	  },
+	  formatAddLevel: function formatAddLevel() {
+	    return 'Niveau toevoegen';
+	  },
+	  formatCancel: function formatCancel() {
+	    return 'Annuleren';
+	  },
+	  formatColumn: function formatColumn() {
+	    return 'Kolom';
+	  },
+	  formatDeleteLevel: function formatDeleteLevel() {
+	    return 'Niveau verwijderen';
+	  },
+	  formatDuplicateAlertTitle: function formatDuplicateAlertTitle() {
+	    return 'Duplicaten gevonden!';
+	  },
+	  formatDuplicateAlertDescription: function formatDuplicateAlertDescription() {
+	    return 'Gelieve dubbele kolommen te verwijderen of wijzigen';
+	  },
+	  formatMultipleSort: function formatMultipleSort() {
+	    return 'Meervoudige sortering';
+	  },
+	  formatOrder: function formatOrder() {
+	    return 'Volgorde';
+	  },
+	  formatSort: function formatSort() {
+	    return 'Sorteren';
+	  },
+	  formatSortBy: function formatSortBy() {
+	    return 'Sorteren op';
+	  },
+	  formatThenBy: function formatThenBy() {
+	    return 'vervolgens';
+	  },
+	  formatSortOrders: function formatSortOrders() {
+	    return {
+	      asc: 'Oplopend',
+	      desc: 'Aflopend'
+	    };
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['nl-NL']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['nl-NL']);
 
 	/**
 	 * Bootstrap Table Polish translation
 	 * Author: zergu <michal.zagdan @ gmail com>
+	 * Update: kerogos <kerog @ wp pl>
 	 */
 
-	$.fn.bootstrapTable.locales['pl-PL'] = {
+	$__default["default"].fn.bootstrapTable.locales['pl-PL'] = $__default["default"].fn.bootstrapTable.locales['pl'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Kopiuj wiersze';
 	  },
 	  formatPrint: function formatPrint() {
 	    return 'Print';
@@ -4524,19 +5163,19 @@
 	    return "Wy\u015Bwietlanie rekord\xF3w od ".concat(pageFrom, " do ").concat(pageTo, " z ").concat(totalRows);
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'poprzednia strona';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "z ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'następna strona';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "Wy\u015Bwietla ".concat(totalRows, " wierszy");
 	  },
 	  formatClearSearch: function formatClearSearch() {
-	    return 'Clear Search';
+	    return 'Wyczyść wyszukiwanie';
 	  },
 	  formatSearch: function formatSearch() {
 	    return 'Szukaj';
@@ -4545,13 +5184,13 @@
 	    return 'Niestety, nic nie znaleziono';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Hide/Show pagination';
+	    return 'Pokaż/ukryj stronicowanie';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'Pokaż stronicowanie';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'Ukryj stronicowanie';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return 'Odśwież';
@@ -4560,49 +5199,49 @@
 	    return 'Przełącz';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
+	    return 'Pokaż układ karty';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
+	    return 'Ukryj układ karty';
 	  },
 	  formatColumns: function formatColumns() {
 	    return 'Kolumny';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'Zaznacz wszystko';
 	  },
 	  formatFullscreen: function formatFullscreen() {
 	    return 'Fullscreen';
 	  },
 	  formatAllRows: function formatAllRows() {
-	    return 'All';
+	    return 'Wszystkie';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Auto odświeżanie';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'Eksport danych';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'Przejdź';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'Wyszukiwanie zaawansowane';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'Zamknij';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Pokaż/Ukryj';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Pokaż';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Ukryj';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['pl-PL']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['pl-PL']);
 
 	/**
 	 * Bootstrap Table Brazilian Portuguese Translation
@@ -4612,7 +5251,7 @@
 	 * Update: Fernando Marcos Souza Silva<fernandomarcosss@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['pt-BR'] = {
+	$__default["default"].fn.bootstrapTable.locales['pt-BR'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -4711,47 +5350,47 @@
 	    return 'Exibir controles';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['pt-BR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['pt-BR']);
 
 	/**
 	 * Bootstrap Table Portuguese Portugal Translation
 	 * Author: Burnspirit<burnspirit@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['pt-PT'] = {
+	$__default["default"].fn.bootstrapTable.locales['pt-PT'] = $__default["default"].fn.bootstrapTable.locales['pt'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Copiar Linhas';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Imprimir';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'A carregar, por favor aguarde';
 	  },
 	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
-	    return "".concat(pageNumber, " registos por p&aacute;gina");
+	    return "".concat(pageNumber, " registos por p\xE1gina");
 	  },
 	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
 	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
 	      return "A mostrar ".concat(pageFrom, " at&eacute; ").concat(pageTo, " de ").concat(totalRows, " linhas (filtered from ").concat(totalNotFiltered, " total rows)");
 	    }
 
-	    return "A mostrar ".concat(pageFrom, " at&eacute; ").concat(pageTo, " de ").concat(totalRows, " linhas");
+	    return "A mostrar ".concat(pageFrom, " at\xE9 ").concat(pageTo, " de ").concat(totalRows, " linhas");
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'página anterior';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "ir para p\xE1gina ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'próxima página';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "Mostrando ".concat(totalRows, " linhas");
 	  },
 	  formatClearSearch: function formatClearSearch() {
-	    return 'Clear Search';
+	    return 'Limpar Pesquisa';
 	  },
 	  formatSearch: function formatSearch() {
 	    return 'Pesquisa';
@@ -4760,16 +5399,16 @@
 	    return 'Nenhum registo encontrado';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Esconder/Mostrar pagina&ccedil&atilde;o';
+	    return 'Esconder/Mostrar paginação';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'Mostrar página';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'Esconder página';
 	  },
 	  formatRefresh: function formatRefresh() {
-	    return 'Atualizar';
+	    return 'Actualizar';
 	  },
 	  formatToggle: function formatToggle() {
 	    return 'Alternar';
@@ -4784,47 +5423,47 @@
 	    return 'Colunas';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'Activar tudo';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return 'Ecrã completo';
 	  },
 	  formatAllRows: function formatAllRows() {
 	    return 'Tudo';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Actualização autmática';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'Exportar dados';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'Avançar';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'Pesquisa avançada';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'Fechar';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Esconder/Exibir controlos';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Esconder controlos';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Exibir controlos';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['pt-PT']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['pt-PT']);
 
 	/**
 	 * Bootstrap Table Romanian translation
 	 * Author: cristake <cristianiosif@me.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ro-RO'] = {
+	$__default["default"].fn.bootstrapTable.locales['ro-RO'] = $__default["default"].fn.bootstrapTable.locales['ro'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -4923,19 +5562,19 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ro-RO']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ro-RO']);
 
 	/**
 	 * Bootstrap Table Russian translation
 	 * Author: Dunaevsky Maxim <dunmaksim@yandex.ru>
 	 */
 
-	$.fn.bootstrapTable.locales['ru-RU'] = {
+	$__default["default"].fn.bootstrapTable.locales['ru-RU'] = $__default["default"].fn.bootstrapTable.locales['ru'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Скопировать строки';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Печать';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Пожалуйста, подождите, идёт загрузка';
@@ -4945,22 +5584,22 @@
 	  },
 	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
 	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "\u0417\u0430\u043F\u0438\u0441\u0438 \u0441 ".concat(pageFrom, " \u043F\u043E ").concat(pageTo, " \u0438\u0437 ").concat(totalRows, " (filtered from ").concat(totalNotFiltered, " total rows)");
+	      return "\u0417\u0430\u043F\u0438\u0441\u0438 \u0441 ".concat(pageFrom, " \u043F\u043E ").concat(pageTo, " \u0438\u0437 ").concat(totalRows, " (\u043E\u0442\u0444\u0438\u043B\u044C\u0442\u0440\u043E\u0432\u0430\u043D\u043E, \u0432\u0441\u0435\u0433\u043E \u043D\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435 ").concat(totalNotFiltered, " \u0437\u0430\u043F\u0438\u0441\u0435\u0439)");
 	    }
 
 	    return "\u0417\u0430\u043F\u0438\u0441\u0438 \u0441 ".concat(pageFrom, " \u043F\u043E ").concat(pageTo, " \u0438\u0437 ").concat(totalRows);
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'предыдущая страница';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "\u043F\u0435\u0440\u0435\u0439\u0442\u0438 \u043A \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435 ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'следующая страница';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043D\u043E ".concat(totalRows, " \u0441\u0442\u0440\u043E\u043A");
 	  },
 	  formatClearSearch: function formatClearSearch() {
 	    return 'Очистить фильтры';
@@ -4972,13 +5611,13 @@
 	    return 'Ничего не найдено';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return 'Hide/Show pagination';
+	    return 'Скрыть/Показать постраничную навигацию';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'Показать постраничную навигацию';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'Скрыть постраничную навигацию';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return 'Обновить';
@@ -4987,61 +5626,61 @@
 	    return 'Переключить';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
+	    return 'Показать записи в виде карточек';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
+	    return 'Табличный режим просмотра';
 	  },
 	  formatColumns: function formatColumns() {
 	    return 'Колонки';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'Выбрать все';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return 'Полноэкранный режим';
 	  },
 	  formatAllRows: function formatAllRows() {
-	    return 'All';
+	    return 'Все';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Автоматическое обновление';
 	  },
 	  formatExport: function formatExport() {
-	    return 'Export data';
+	    return 'Экспортировать данные';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'Стр.';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'Расширенный поиск';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'Закрыть';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Скрыть/Показать панель инструментов';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Скрыть панель инструментов';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Показать панель инструментов';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ru-RU']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ru-RU']);
 
 	/**
 	 * Bootstrap Table Slovak translation
 	 * Author: Jozef Dúc<jozef.d13@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['sk-SK'] = {
+	$__default["default"].fn.bootstrapTable.locales['sk-SK'] = $__default["default"].fn.bootstrapTable.locales['sk'] = {
 	  formatCopyRows: function formatCopyRows() {
-	    return 'Copy Rows';
+	    return 'Skopírovať riadky';
 	  },
 	  formatPrint: function formatPrint() {
-	    return 'Print';
+	    return 'Vytlačiť';
 	  },
 	  formatLoadingMessage: function formatLoadingMessage() {
 	    return 'Prosím čakajte';
@@ -5057,16 +5696,16 @@
 	    return "Zobrazen\xE1 ".concat(pageFrom, ". - ").concat(pageTo, ". polo\u017Eka z celkov\xFDch ").concat(totalRows);
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return 'previous page';
+	    return 'Predchádzajúca strana';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "to page ".concat(page);
+	    return "na stranu ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return 'next page';
+	    return 'Nasledujúca strana';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "Showing ".concat(totalRows, " rows");
+	    return "Zobrazuje sa ".concat(totalRows, " riadkov");
 	  },
 	  formatClearSearch: function formatClearSearch() {
 	    return 'Odstráň filtre';
@@ -5081,10 +5720,10 @@
 	    return 'Skry/Zobraz stránkovanie';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return 'Show pagination';
+	    return 'Zobraziť stránkovanie';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return 'Hide pagination';
+	    return 'Skryť stránkovanie';
 	  },
 	  formatRefresh: function formatRefresh() {
 	    return 'Obnoviť';
@@ -5093,56 +5732,56 @@
 	    return 'Prepni';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return 'Show card view';
+	    return 'Zobraziť kartové zobrazenie';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return 'Hide card view';
+	    return 'skryť kartové zobrazenie';
 	  },
 	  formatColumns: function formatColumns() {
 	    return 'Stĺpce';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return 'Toggle all';
+	    return 'Prepnúť všetky';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return 'Fullscreen';
+	    return 'Celá obrazovka';
 	  },
 	  formatAllRows: function formatAllRows() {
 	    return 'Všetky';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return 'Auto Refresh';
+	    return 'Automatické obnovenie';
 	  },
 	  formatExport: function formatExport() {
 	    return 'Exportuj dáta';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return 'GO';
+	    return 'Ísť';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return 'Advanced search';
+	    return 'Pokročilé vyhľadávanie';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return 'Close';
+	    return 'Zatvoriť';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return 'Hide/Show controls';
+	    return 'Zobraziť/Skryť tlačidlá';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return 'Hide controls';
+	    return 'Skryť tlačidlá';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return 'Show controls';
+	    return 'Zobraziť tlačidlá';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['sk-SK']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['sk-SK']);
 
 	/**
 	* Bootstrap Table Serbian Cyrilic RS translation
 	* Author: Vladimir Kanazir (vladimir@kanazir.com)
 	*/
 
-	$.fn.bootstrapTable.locales['sr-Cyrl-RS'] = {
+	$__default["default"].fn.bootstrapTable.locales['sr-Cyrl-RS'] = $__default["default"].fn.bootstrapTable.locales['sr'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5241,14 +5880,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['sr-Cyrl-RS']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['sr-Cyrl-RS']);
 
 	/**
 	* Bootstrap Table Serbian Latin RS translation
 	* Author: Vladimir Kanazir (vladimir@kanazir.com)
 	*/
 
-	$.fn.bootstrapTable.locales['sr-Latn-RS'] = {
+	$__default["default"].fn.bootstrapTable.locales['sr-Latn-RS'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5347,14 +5986,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['sr-Latn-RS']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['sr-Latn-RS']);
 
 	/**
 	 * Bootstrap Table Swedish translation
 	 * Author: C Bratt <bratt@inix.se>
 	 */
 
-	$.fn.bootstrapTable.locales['sv-SE'] = {
+	$__default["default"].fn.bootstrapTable.locales['sv-SE'] = $__default["default"].fn.bootstrapTable.locales['sv'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5453,14 +6092,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['sv-SE']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['sv-SE']);
 
 	/**
 	 * Bootstrap Table Thai translation
 	 * Author: Monchai S.<monchais@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['th-TH'] = {
+	$__default["default"].fn.bootstrapTable.locales['th-TH'] = $__default["default"].fn.bootstrapTable.locales['th'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5559,7 +6198,7 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['th-TH']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['th-TH']);
 
 	/**
 	 * Bootstrap Table Turkish translation
@@ -5567,7 +6206,7 @@
 	 * Author: Sercan Cakir <srcnckr@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['tr-TR'] = {
+	$__default["default"].fn.bootstrapTable.locales['tr-TR'] = $__default["default"].fn.bootstrapTable.locales['tr'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5666,14 +6305,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['tr-TR']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['tr-TR']);
 
 	/**
 	 * Bootstrap Table Ukrainian translation
 	 * Author: Vitaliy Timchenko <vitaliy.timchenko@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['uk-UA'] = {
+	$__default["default"].fn.bootstrapTable.locales['uk-UA'] = $__default["default"].fn.bootstrapTable.locales['uk'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5772,14 +6411,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['uk-UA']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['uk-UA']);
 
 	/**
 	 * Bootstrap Table Urdu translation
 	 * Author: Malik <me@malikrizwan.com>
 	 */
 
-	$.fn.bootstrapTable.locales['ur-PK'] = {
+	$__default["default"].fn.bootstrapTable.locales['ur-PK'] = $__default["default"].fn.bootstrapTable.locales['ur'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5878,14 +6517,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ur-PK']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['ur-PK']);
 
 	/**
 	 * Bootstrap Table Uzbek translation
 	 * Author: Nabijon Masharipov <mnabijonz@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['uz-Latn-UZ'] = {
+	$__default["default"].fn.bootstrapTable.locales['uz-Latn-UZ'] = $__default["default"].fn.bootstrapTable.locales['uz'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -5984,14 +6623,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['uz-Latn-UZ']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['uz-Latn-UZ']);
 
 	/**
 	 * Bootstrap Table Vietnamese translation
 	 * Author: Duc N. PHAM <pngduc@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['vi-VN'] = {
+	$__default["default"].fn.bootstrapTable.locales['vi-VN'] = $__default["default"].fn.bootstrapTable.locales['vi'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -6090,14 +6729,14 @@
 	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['vi-VN']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['vi-VN']);
 
 	/**
 	 * Bootstrap Table Chinese translation
 	 * Author: Zhixin Wen<wenzhixin2010@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['zh-CN'] = {
+	$__default["default"].fn.bootstrapTable.locales['zh-CN'] = $__default["default"].fn.bootstrapTable.locales['zh'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -6196,14 +6835,14 @@
 	    return '显示过滤控制';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['zh-CN']);
 
 	/**
 	 * Bootstrap Table Chinese translation
 	 * Author: Zhixin Wen<wenzhixin2010@gmail.com>
 	 */
 
-	$.fn.bootstrapTable.locales['zh-TW'] = {
+	$__default["default"].fn.bootstrapTable.locales['zh-TW'] = {
 	  formatCopyRows: function formatCopyRows() {
 	    return 'Copy Rows';
 	  },
@@ -6302,6 +6941,6 @@
 	    return '顯示過濾控制';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-TW']);
+	$__default["default"].extend($__default["default"].fn.bootstrapTable.defaults, $__default["default"].fn.bootstrapTable.locales['zh-TW']);
 
-})));
+}));

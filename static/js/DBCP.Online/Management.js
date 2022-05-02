@@ -265,7 +265,7 @@ $(document).ready(function () {
 
             success: function (result) {
                 $("#causalitytoReset").val('');
-                alert(result);
+                // alert(result);
             }
         });
     });

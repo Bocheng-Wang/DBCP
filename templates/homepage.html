@@ -1,0 +1,175 @@
+{#login/templates/login/index.html#}
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>{% block title %} {% translate 'DBCP HomePage' %}{% endblock %}</title>
+    <!-- Bootstrap -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap-3.3.7-dist/css/bootstrap-theme.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/DBCP.Online/homepage.css' %}">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+      <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+    {#    <script src="{% static 'bootstrap-3.3.7-dist/js/npm.js' %}"></script>#}
+    <![endif]-->
+    {% block script %}{% endblock %}
+    {% block css %}{% endblock %}
+</head>
+<body>
+<div class="Header row">
+
+    <div class="col-md-12">
+        <nav class="navbar  navbar-fixed-top navbar-inverse">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+
+                    </button>
+                    <a class="navbar-brand" href="/">{% translate 'DBCP Project' %}</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">{% translate 'HomePage' %} <span class="sr-only">(current)</span></a></li>
+                        <li><a href="/ContentManagement/ProjectDescription">{% translate 'Introduction' %}</a></li>
+                        <li><a href="/ContentManagement/ProjectMember">{% translate 'Member' %}</a></li>
+                        <li><a href="/ContentManagement/ProjectProgress">{% translate 'Research & Related Works' %}
+                            <span class="badge">5</span> </a>
+                        </li>
+
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true"
+                               aria-expanded="false">DBCP-Online <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/DBCPOnline/Usage">{% translate 'Documentation' %} <span
+                                        class="badge alert-info">To be continued</span></a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/DBCPOnline/Preparation">{% translate 'Preparation' %} <span
+                                        class="badge alert-success">Ready !</span></a></li>
+                                <li><a href="/DBCPOnline/Preprocessing">{% translate 'Preprocessing' %}
+                                    <span class="badge alert-info">In developing</span></a></li>
+                                <li><a href="/DBCPOnline/KBCAAnalysis">{% translate 'KBCA Analysis' %} <span
+                                        class="badge alert-info">In developing</span> <span
+                                        class="badge alert-danger">New !</span></a></li>
+                                <li><a href="/DBCPOnline/Visualization">{% translate 'Visualization' %}<span
+                                        class="badge alert-info">In developing</span> </a></li>
+
+                                {#                                    <li role="separator" class="divider"></li>#}
+                                {#                                    <li><a href="/DBCPOnline/J-HCPMMP">J-HCPMMP</a></li>#}
+                                {#                                    <li><a href="/DBCPOnline/progressiveHypothesis">假设驱动模型</a></li>#}
+                                {#                                    <li><a href="/DBCPOnline/Multi-modal">多模态深度学习</a></li>#}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/DBCPOnline/TopologicalAnalysis">{% translate 'TopologicalAnalysis' %}
+                                    <span
+                                            class="badge alert-warning">Coming !</span></a>
+                                </li>
+                                <li><a href="/DBCPOnline/DeepLearning">{% translate 'DeepLearning' %}<span
+                                        class="badge alert-warning">Coming !</span></a></li>
+                                {#                                    <li><a href="/DBCPOnline/DBCP">动态脑连接分析</a></li>#}
+
+                            </ul>
+                        </li>
+
+                        <li><a href="/ContentManagement/ContactUs">{% translate 'Contact Us' %}</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        {#                    <form class="navbar-form navbar-left">#}
+                        {#                        <div class="form-group">#}
+                        {#                            <input type="text" class="form-control" placeholder="Search">#}
+                        {#                        </div>#}
+                        {#                        <button type="submit" class="btn btn-default">站内搜索</button>#}
+                        {#                    </form>#}
+                        {% if request.session.is_login %}
+                            <li><a id="UserOnline"
+                                   href="/UserManagement/userdetail">
+                                {% translate 'Current: ' %}{{ request.session.user_name }} <span
+                                    class="badge">42</span></a></li>
+                            <li><a href="/UserManagement/logout/">{% translate 'Login out' %}</a></li>
+                        {% else %}
+                            <li><a href="/UserManagement/login/">{% translate 'Login in' %}</a></li>
+                            <li><a href="/UserManagement/register/">{% translate 'Registration' %}</a></li>
+                        {% endif %}
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="col-md-12">
+
+            <div class="jumbotron masthead">
+                <div class="container">
+                    <h1>DBCP</h1>
+                    <h2><span style="font-weight: bold; color: #eedd4e">D</span>ynamic <span
+                            style="font-weight: bold; color: #eedd4e">B</span>rain <span
+                            style="font-weight: bold; color: #eedd4e">C</span>onnectivity <span
+                            style="font-weight: bold; color: #eedd4e">P</span>reprocessing
+                    </h2>
+                    <br>
+                    <p class="masthead-button-links">
+                        <a class="btn btn-lg btn-primary btn-shadow" href="https://github.com/Bocheng-Wang/DBCP.git">Source
+                            Code </a>
+                    </p>
+                    v2.0.2022.01.01
+                </div>
+            </div>
+            <div class="container projects">
+                <div class="col-lg-12  ">
+                    <div class="thumbnail" style="width: 100%;">
+                        <img class="lazy" src={% static 'Images/homepage.gif' %}>
+                        <div class="caption text-center">
+                            <h3 class="text-center">
+                                <span class="label label-success">Online:</span>
+                                <span class="label label-info">MRI/fMRI Preprocessing</span>
+                                <span class="label label-info">Complex Brain Network Study</span>
+                                <span class="label label-info">Deep Learning for MCI/AD</span>
+                                <span class="label label-info">Visualization</span>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<footer class="footer navbar-fixed-bottom bs-docs-footer">
+    <div class="text-center">
+        <p>{% translate '998 Xue Yuan Street, Hangzhou, Zhejiang, PRC' %} <a
+                href="http://www.cuz.edu.cn"> {% translate 'Communication University of Zhejiang' %} </a> {% translate ' Post code:310018' %}
+        </p>
+
+        <div class="container projects text-center" style="bottom: 0">
+            <span class="label label-default">Current IP: {{ currentIP }} ---  Total Visit: {{ total_visit }} </span>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
+
+

@@ -1,10 +1,12 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
   typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-  (global = global || self, factory(global.jQuery));
-}(this, (function ($) { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jQuery));
+})(this, (function ($) { 'use strict';
 
-  $ = $ && Object.prototype.hasOwnProperty.call($, 'default') ? $['default'] : $;
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var $__default = /*#__PURE__*/_interopDefaultLegacy($);
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -25,6 +27,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -39,6 +44,9 @@
         writable: true,
         configurable: true
       }
+    });
+    Object.defineProperty(subClass, "prototype", {
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -59,6 +67,19 @@
     return _setPrototypeOf(o, p);
   }
 
+  function _isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+
+    try {
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function _assertThisInitialized(self) {
     if (self === void 0) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -70,9 +91,30 @@
   function _possibleConstructorReturn(self, call) {
     if (call && (typeof call === "object" || typeof call === "function")) {
       return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
     }
 
     return _assertThisInitialized(self);
+  }
+
+  function _createSuper(Derived) {
+    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+    return function _createSuperInternal() {
+      var Super = _getPrototypeOf(Derived),
+          result;
+
+      if (hasNativeReflectConstruct) {
+        var NewTarget = _getPrototypeOf(this).constructor;
+
+        result = Reflect.construct(Super, arguments, NewTarget);
+      } else {
+        result = Super.apply(this, arguments);
+      }
+
+      return _possibleConstructorReturn(this, result);
+    };
   }
 
   /**
@@ -80,25 +122,25 @@
    * @update zhixin wen <wenzhixin2010@gmail.com>
    */
 
-  $.fn.bootstrapTable.methods.push('changeTitle');
-  $.fn.bootstrapTable.methods.push('changeLocale');
+  $__default["default"].fn.bootstrapTable.methods.push('changeTitle');
+  $__default["default"].fn.bootstrapTable.methods.push('changeLocale');
 
-  $.BootstrapTable =
-  /*#__PURE__*/
-  function (_$$BootstrapTable) {
+  $__default["default"].BootstrapTable = /*#__PURE__*/function (_$$BootstrapTable) {
     _inherits(_class, _$$BootstrapTable);
+
+    var _super = _createSuper(_class);
 
     function _class() {
       _classCallCheck(this, _class);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(_class).apply(this, arguments));
+      return _super.apply(this, arguments);
     }
 
     _createClass(_class, [{
       key: "changeTitle",
       value: function changeTitle(locale) {
-        $.each(this.options.columns, function (idx, columnList) {
-          $.each(columnList, function (idx, column) {
+        $__default["default"].each(this.options.columns, function (idx, columnList) {
+          $__default["default"].each(columnList, function (idx, column) {
             if (column.field) {
               column.title = locale[column.field];
             }
@@ -120,6 +162,6 @@
     }]);
 
     return _class;
-  }($.BootstrapTable);
+  }($__default["default"].BootstrapTable);
 
-})));
+}));

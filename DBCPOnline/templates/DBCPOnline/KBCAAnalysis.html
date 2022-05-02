@@ -61,19 +61,23 @@
                             {#                                </div>#}
                             {#                            </div>#}
                             <table data-url="/KalmanFilter/CheckTasks/ALL"
-                                   data-pagination="true"
+{#                                   data-pagination="true"#}
                                    data-locale="zh-CN"
                                    data-single-select="true"
                                    data-detail-view="true"
                                    data-detail-formatter="myUpload_detailFormatter"
                                     {#                                   data-click-to-select="true"#}
                                    data-toggle="table"
-                                   data-page-size="1000"
-                                   data-sort-name="endTime"
+                                   data-page-size="15"
+                                   data-sort-name="Task_EndTime"
                                    data-sort-order="desc"
                                    data-sortable="true"
+                                   data-pagination="true"
+                                   data-side-pagination="server"
+                                   data-query-params-type=" "
+                                   data-query-params="queryParams"
                                     {#                                   data-filter-control="true"#}
-                                   data-page-list=[5,10,20,50,All]
+{#                                   data-page-list=[5,10,20,50,All]#}
                                    data-row-style="dataRowStyle"
                                    id="PreprocessingTable" class="table-striped  table-sm">
                                 <thead>

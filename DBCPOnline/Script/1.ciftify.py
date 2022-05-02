@@ -131,11 +131,16 @@ def segmentNotInMatlab(workDir, subjectDir, output, subjectID, wbcommand):
         start_point = step * (windowIndex)
         windowed_dseries[:, :] = dense_timeseries[:, start_point: start_point + win_width]
 
+
         dtseries_tmp_ = '/tmp/' + str(windowIndex) + '.tmp.dtseries.nii'
+        if os.path.exists(dtseries_tmp_):
+            os.remove(dtseries_tmp_)
         # for nibabel, columns are parcels which do not match the requirement of HCP Pipeline command
         # In HCP wb_command, columns are volumes, rows are parcels in dtseries.nii file
         data = nibabel.load(dtseries_tmp)
         data.header.shape = windowed_dseries.shape
+
+
 
         SeriesAxis = cifti2.cifti2_axes.SeriesAxis(0, 0, 15)
         BrainModelAxis = data.header.get_axis(1)

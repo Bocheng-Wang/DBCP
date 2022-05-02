@@ -57,6 +57,8 @@ def segmentInMatlab(workDir, subjectDir, output, subjectID, wbcommand):
         windowed_dseries[:, :] = dense_timeseries[:, start_point: start_point + win_width]
 
         dtseries_tmp_ = '/tmp/' + str(windowIndex) + '.tmp.dtseries.nii'
+        if os.path.exists(dtseries_tmp_):
+            os.remove(dtseries_tmp_)
         # for nibabel, columns are parcels which do not match the requirement of HCP Pipeline command
         # In HCP wb_command, columns are volumes, rows are parcels in dtseries.nii file
         data = nibabel.load(dtseries_tmp)
@@ -100,11 +102,14 @@ def segmentInMatlab(workDir, subjectDir, output, subjectID, wbcommand):
 #
 # segmentInMatlab(ciftify_rootDir, rootDir, outputDir, 'sub-' + subjectid, 'wb_command')
 
+
+
+
 win_width = 15
 vertex_total = 91282
 
 windowed_dseries = numpy.zeros([vertex_total, win_width])
-dtseries_tmp = './new.nii'
+dtseries_tmp = './0.tmp.dtseries.nii'
 data = nibabel.load(dtseries_tmp)
 data.header.shape = windowed_dseries.shape
 SeriesAxis = cifti2.cifti2_axes.SeriesAxis(0, 0, 15)

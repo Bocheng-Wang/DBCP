@@ -38,7 +38,6 @@ def Usage(request):
                                                      'total_visit': totalVisit})
 
 
-
 def Preparation(request):
     if not request.session.get('is_login', None):
         return render(request, 'DBCPOnline/Preparation.html')
@@ -291,7 +290,7 @@ def Find_Visit_By_SubjectID(request):
         visitRecord['Visit_ID'] = visit.pk
         visitRecord['Phase'] = visit.Phase
         visitRecord['Diagnosis'] = visit.Diagnosis
-        visitRecord['visit_time'] = visit.visit_time
+        visitRecord['visit_time'] = visit.visit_time.strftime("%Y/%m/%d %H:%M:%S")
         visitRecord['ModalID'] = ModalInfo.objects.get(Visit=visit).pk
         visitRecord['MMSE'] = visit.MMSE
         visitRecord['CDR'] = visit.CDR
@@ -367,7 +366,14 @@ def checkUploadedFiles(request, range):
         user = User.objects.get(id=request.session['user_id'])
         rarfileList = RARFile.objects.filter(uploader=user)
     elif range == 'ALL':
-        rarfileList = RARFile.objects.all()
+        pageSize = int(request.GET.get('pageSize'))
+        pageNumber = int(request.GET.get('pageNumber'))
+        sortName = request.GET.get('sortName')
+        sortOrder = request.GET.get('sortOrder')
+        if sortOrder == 'desc':
+            sortName = '-' + sortName
+        total = RARFile.objects.all().count()
+        rarfileList = RARFile.objects.order_by(sortName)[(pageNumber - 1) * pageSize:(pageNumber) * pageSize]
         # Check preprocessing task in period
         # global job_is_start
         # if job_is_start is False:
@@ -418,7 +424,11 @@ def checkUploadedFiles(request, range):
             uploadedFile['Task_Status'] = 200
 
         uploadedFileList.append(uploadedFile)
-    return HttpResponse(json.dumps(uploadedFileList))
+    # return HttpResponse(json.dumps(uploadedFileList))
+    if range == 'MY':
+        return HttpResponse(json.dumps(uploadedFileList))
+    elif range == 'ALL':
+        return HttpResponse(json.dumps({'total': total, 'rows': uploadedFileList}))
 
 
 def checkUploadedSubjects(request, range):

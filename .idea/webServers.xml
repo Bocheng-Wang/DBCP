@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="f1ab80e6-0476-4039-8024-2befc490aa03" name="DBCP.Web" url="http://dbcp.cuz.edu.cn">
-        <fileTransfer rootFolder="/var/www/DBCP.Web" accessType="SFTP" host="10.1.125.7" port="22" sshConfigId="f60643c1-275d-4afd-b952-62501a379b9d" sshConfig="root@10.1.125.7:22 password">
+      <webServer id="31a8c634-600b-4325-9890-36f542ec8862" name="10.1.83.158">
+        <fileTransfer rootFolder="/var/www/DBCP.Web/" accessType="SFTP" host="10.1.83.158" port="22" sshConfigId="16b27c69-47f4-4a95-be14-8f37e5710739" sshConfig="root@10.1.83.158:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

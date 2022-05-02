@@ -7,12 +7,12 @@
 {% block content %}
     {% if request.session.is_login %}
         <h1>{% translate 'Hi' %} {{ request.session.user_name }}, {% translate 'Waiting for your contact' %} <small>Email:
-            DBCP@cuz.edu.cn</small></h1>
-        <h3>媒体工程学院 DBCP项目组</h3>
+            wangboc@cuz.edu.cn</small></h1>
+        <h3>DBCP项目组</h3>
         <h5>浙江 杭州 310018</h5>
     {% else %}
-        <h1>Email: DBCP@cuz.edu.cn</h1>
-        <h3>媒体工程学院 DBCP项目组</h3>
+        <h1>Email: wangboc@cuz.edu.cn</h1>
+        <h3>DBCP项目组</h3>
         <h5>浙江 杭州 310018</h5>
     {% endif %}
 {% endblock %}

@@ -5,98 +5,153 @@
 {% load static %}
 {% block title %}{% translate 'Research' %}{% endblock %}
 {% block content %}
-    {#    {% if request.session.is_login %}#}
+    {% if request.session.is_login %}
+        <div class="col-lg-12">
+            <dl>
+                <div class="page-header">
+                    <h1>
+                        {% translate '研究进展' %}
+                        <small>{% translate '' %}</small>
+                    </h1>
+                </div>
+                <div class="col-md-12">
+                    <dt>
+                        {% translate '2022' %}
+                    </dt>
+                    <dd>
+                        <ul>
+                            <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                                <a href={% static 'Documentation.Public/2022.BSPC.pdf' %}>{% translate '<strong>Wang B *</strong>, Li L, Peng L, et al. Multigroup recognition of dementia patients with dynamic brain connectivity under multimodal cortex parcellation[J]. Biomedical Signal Processing and Control, 2022, 76: 103725.' %}</a>
 
-    <div class="col-lg-12">
-        <dl>
-            <div class="page-header">
-                <h1>
-                    {% translate '研究进展' %}
-                    <small>{% translate '&nbsp &nbsp &nbsp* 博导一作、通信' %}</small>
-                </h1>
-            </div>
+                            </li>
 
-            <div class="col-md-12">
-                <dt>
-                    {% translate '2021' %}
-                </dt>
-                <dd>
-                    <ul>
-                        <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
-                            <a href={% static 'Documentation.Public/2021Heliyon.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Zhang Q, et al. Identifying and characterizing different stages toward Alzheimer`s disease using ordered core features and machine learning[J]. Heliyon, 2021: e07287.' %}</a>
+                            {#                            <div  class="col-md-6">#}
+                            {#                                <img width="100%" src="{% static 'Images/F.2021.AD1.png' %}">#}
+                            {#                            </div>#}
+                        </ul>
+                    </dd>
+                </div>
+                <div class="page-header">
+                    <h1>
+                        {% translate '攻读博士期间' %}
+                        <small>{% translate '&nbsp &nbsp &nbsp* 博导一作、通信' %}</small>
+                    </h1>
+                </div>
+                <div class="col-md-12">
+                    <dt>
+                        {% translate '2022' %}
+                    </dt>
+                    <dd>
+                        <ul>
+                            <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                                <a href={% static 'Documentation.Public/2022Heliyon.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Zhang Q, et al. Connectivity and variability of related cognitive subregions lead to different stages of progression toward Alzheimer`s disease[J]. Heliyon, 2022: e08827.' %}</a>
 
-                        </li>
+                            </li>
 
-                        {#                            <div  class="col-md-6">#}
-                        {#                                <img width="100%" src="{% static 'Images/F.2021.AD1.png' %}">#}
-                        {#                            </div>#}
-                    </ul>
-                </dd>
-            </div>
-            <div class="col-md-12">
-                <dt>
-                    {% translate '2020' %}
-                </dt>
-                <dd>
-                    <ul>
-                        <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
-                            <a href={% static 'Documentation.Public/2020HC.pdf' %}>{% translate 'Sheng J*, Liu Q, <strong>Wang B</strong>, et al. Characteristics and variability of functional brain networks[J]. Neuroscience letters, 2020, 729: 134954.' %}</a>
-                        </li>
-                    </ul>
-                </dd>
-            </div>
-            <div class="col-md-12">
-                <dt>
-                    {% translate '2019' %}
-                </dt>
-                <dd>
-                    <ul>
-                        <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
-                            <a href={% static 'Documentation.Public/2019AD.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Zhang Q, et al. A novel joint HCPMMP method for automatically classifying Alzheimer’s and different stage MCI patients[J]. Behavioural brain research, 2019, 365: 210-221.' %}</a>
-                        </li>
+                            {#                            <div  class="col-md-6">#}
+                            {#                                <img width="100%" src="{% static 'Images/F.2021.AD1.png' %}">#}
+                            {#                            </div>#}
+                        </ul>
+                    </dd>
+                </div>
+                <div class="col-md-12">
+                    <dt>
+                        {% translate '2021' %}
+                    </dt>
+                    <dd>
+                        <ul>
+                            <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                                <a href={% static 'Documentation.Public/2021Heliyon.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Zhang Q, et al. Identifying and characterizing different stages toward Alzheimer`s disease using ordered core features and machine learning[J]. Heliyon, 2021: e07287.' %}</a>
 
-                        <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
-                            <a href={% static 'Documentation.Public/2019PMRI.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Ma Y, et al. Improved parallel MR imaging with accurate coil sensitivity estimation using iterative adaptive support[J]. Biomedical Signal Processing and Control, 2019, 51: 73-81.' %}</a>
-                        </li>
+                            </li>
 
-                    </ul>
-                </dd>
-                <dt>
-                    {% translate '研究基础' %}
-                </dt>
-                <dd>
-                    <ul>
-                        <li style="text-indent:2em; font-size: 20px; margin-top: 20px; line-height:2em;">
-                            本项目负责人及项目组成员具备较高科研素质，从事多年科学研究，作为主要成员负责/参与多项国家、省部级科研项目和系统研发。自2018年以来，项目负责人作为主要成员参与国家自然科学基金面上资助项目《联合脑成像网络与基因分析预测阿尔茨海默症》，在多模态大脑皮层分区方法、功能性磁共振数据预处理、认知功能障碍人群脑区拓扑变异等方面进行了广泛而深入的理论研究和实验，基于复杂脑网络建模方法，进一步揭示了静态大脑连接中前额叶、扣带回皮层、海马体等区域与认知能力下降显著关联的原因，发现了不同程度认知障碍患者的复杂脑网络中存在单向递进关系的现象。基于机器学习方法和深度学习理论，实现了较高水平的认知障碍识别技术。项目组前期积累了大量科研数据和经验，在《Behavioural
-                            Brain Research》（IF=2.977）、《Biomedical Signal Processing and
-                            Control》（IF=3.137）、《Scientific
-                            Reports》（IF=3.998）、《Neuroscience Letters》（IF=2.274）等刊物发表多篇学术论文。
-                        </li>
-                    </ul>
-                </dd>
-                <div class="col-md-12 text-center">
-                    <div class="col-md-6">
-                        <img width="100%" src="{% static 'Images/F.2019.AD.png' %}">
+                            {#                            <div  class="col-md-6">#}
+                            {#                                <img width="100%" src="{% static 'Images/F.2021.AD1.png' %}">#}
+                            {#                            </div>#}
+                        </ul>
+                    </dd>
+                </div>
+                <div class="col-md-12">
+                    <dt>
+                        {% translate '2020' %}
+                    </dt>
+                    <dd>
+                        <ul>
+                            <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                                <a href={% static 'Documentation.Public/2020HC.pdf' %}>{% translate 'Sheng J*, Liu Q, <strong>Wang B</strong>, et al. Characteristics and variability of functional brain networks[J]. Neuroscience letters, 2020, 729: 134954.' %}</a>
+                            </li>
+                        </ul>
+                    </dd>
+                </div>
+                <div class="col-md-12">
+                    <dt>
+                        {% translate '2019' %}
+                    </dt>
+                    <dd>
+                        <ul>
+                            <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                                <a href={% static 'Documentation.Public/2019AD.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Zhang Q, et al. A novel joint HCPMMP method for automatically classifying Alzheimer’s and different stage MCI patients[J]. Behavioural brain research, 2019, 365: 210-221.' %}</a>
+                            </li>
+
+                            <li style="margin-left: 50px;margin-top:20px;margin-bottom: 20px;">
+                                <a href={% static 'Documentation.Public/2019PMRI.pdf' %}>{% translate 'Sheng J*, <strong>Wang B</strong>, Ma Y, et al. Improved parallel MR imaging with accurate coil sensitivity estimation using iterative adaptive support[J]. Biomedical Signal Processing and Control, 2019, 51: 73-81.' %}</a>
+                            </li>
+
+                        </ul>
+                    </dd>
+                    <dt>
+                        {% translate '研究基础' %}
+                    </dt>
+                    <dd>
+                        <ul>
+                            <li style="text-indent:2em; font-size: 20px; margin-top: 20px; line-height:2em;">
+                                本项目负责人具备较高科研素质，从事多年科学研究，作为主要成员负责/参与多项国家、省部级科研项目和系统研发。2016-2021年攻读博士期间，项目负责人主要参与了国家自然科学基金面上资助项目《新型因果关系分析法理论及应用研究》(61473110)和《联合脑成像网络与基因分析预测阿尔茨海默症》(61871168)。在多模态大脑皮层分区方法、功能性磁共振数据预处理、认知功能障碍人群脑区拓扑变异等方面进行了广泛而深入的理论研究和实验，基于复杂脑网络建模方法，进一步揭示了静态大脑连接中前额叶、扣带回皮层、海马体等区域与认知能力下降显著关联的原因，发现了不同程度认知障碍患者的复杂脑网络中存在单向递进关系的现象。基于机器学习方法和深度学习理论，实现了较高水平的认知障碍识别。前期积累了大量科研数据和经验，在Behavioural
+                                Brain Research、Biomedical Signal Processing and Control、Neuroscience
+                                Letters、Heliyon等国际高水平期刊，以及ICONIP、ICISCE等国际学术会议上发表多篇学术论文。
+                            </li>
+                        </ul>
+                    </dd>
+
+                    <div class="col-md-12 text-center">
+                        <div class="col-md-6">
+                            <img width="100%" src="{% static 'Images/F.2022.Com.png' %}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <img width="100%" src="{% static 'Images/F.2021.AD1.png' %}">
+                        </div>
+
                     </div>
-                    <div class="col-md-6">
-                        <img width="100%" src="{% static 'Images/F.2019.AD3.png' %}">
+                    <div class="col-md-12 text-center">
+                        <div class="col-md-6">
+                            <img width="100%" src="{% static 'Images/F.2022.Ana.png' %}">
+                        </div>
+                        <div class="col-md-6">
+                            <img width="100%" src="{% static 'Images/F.2022.AD.png' %}">
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-12 text-center">
+
+                        <div class="col-md-6">
+                            <img width="100%" src="{% static 'Images/F.2019.AD3.png' %}">
+                        </div>
+                        <div class="col-md-6">
+                            <img width="100%" src="{% static 'Images/F.2021.AD2.png' %}">
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-center">
+
+                        <div class="col-md-12">
+                            <img width="100%" src="{% static 'Images/F.2022.Acc.png' %}">
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-12 text-center">
-                    <div class="col-md-6">
-                        <img width="100%" src="{% static 'Images/F.2021.AD2.png' %}">
-                    </div>
-                    <div class="col-md-6">
-                        <img width="100%" src="{% static 'Images/F.2021.AD1.png' %}">
-                    </div>
 
-                </div>
-            </div>
-
-        </dl>
-    </div>
-
-    {#    {% else %}#}
-    {#        <h1>{% translate 'Please Login in' %}</h1>#}
-    {#    {% endif %}#}
+            </dl>
+        </div>
+    {% else %}
+        <h1>{% translate 'Please Login in' %}</h1>
+    {% endif %}
 {% endblock %}
